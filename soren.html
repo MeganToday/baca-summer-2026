@@ -6,333 +6,821 @@
   <title>Soren's Dashboard – Baca Summer Challenge 2026</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #e8f0fe; color: #333; min-height: 100vh; }
-    .header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; padding: 20px 30px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 16px; }
-    .header img { width: 70px; height: 70px; border-radius: 50%; border: 3px solid white; object-fit: cover; }
-    .header h1 { font-size: 1.8rem; }
-    .back-link { display: inline-block; margin: 16px 20px; color: #1a73e8; text-decoration: none; font-weight: 600; }
-    .content { max-width: 900px; margin: 0 auto; padding: 20px; }
-    .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(26,115,232,0.1); border-left: 5px solid #1a73e8; }
-    .card h2 { color: #1a73e8; margin-bottom: 16px; font-size: 1.2rem; }
-    .placeholder { color: #aaa; font-style: italic; text-align: center; padding: 20px; background: #f8f9ff; border-radius: 8px; }
-    input[type="password"] { width: 200px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; margin-right: 10px; }
-    .btn { background: #1a73e8; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; }
-    .btn:hover { background: #1565c0; }
-    .error { color: #e74c3c; font-size: 0.9rem; margin-top: 6px; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0d1b2a;
+      color: #e0e8ff;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #1565c0 0%, #0d47a1 50%, #01579b 100%);
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .header-bg {
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .header-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 32px;
+    }
+    .header-avatar {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      border: 4px solid #64b5f6;
+      object-fit: cover;
+      box-shadow: 0 0 20px rgba(100,181,246,0.5);
+    }
+    .header-text h1 { font-size: 2rem; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .header-text p { color: #90caf9; font-size: 0.95rem; margin-top: 4px; }
+    .header-stats {
+      margin-left: auto;
+      display: flex;
+      gap: 16px;
+    }
+    .header-stat {
+      text-align: center;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px 18px;
+      backdrop-filter: blur(4px);
+    }
+    .header-stat .stat-val { font-size: 1.5rem; font-weight: 900; color: #64b5f6; }
+    .header-stat .stat-lbl { font-size: 0.75rem; color: #90caf9; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 14px 20px;
+      color: #64b5f6;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .back-link:hover { color: #90caf9; }
+
+    /* ── LOGIN ── */
+    .login-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+    .login-box {
+      background: #1a2744;
+      border: 2px solid #1565c0;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      width: 340px;
+      box-shadow: 0 8px 32px rgba(21,101,192,0.3);
+    }
+    .login-box h2 { color: #64b5f6; margin-bottom: 8px; font-size: 1.3rem; }
+    .login-box p { color: #7896b8; font-size: 0.9rem; margin-bottom: 20px; }
+    .login-box input {
+      width: 100%; padding: 12px; border: 2px solid #1e3a6e;
+      border-radius: 10px; font-size: 1rem; text-align: center;
+      background: #0d1b2a; color: #e0e8ff; letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+    .login-box input:focus { outline: none; border-color: #1565c0; }
+    .btn-login {
+      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      color: white; border: none; padding: 12px 32px;
+      border-radius: 10px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; width: 100%;
+      box-shadow: 0 4px 16px rgba(21,101,192,0.4);
+    }
+    .btn-login:hover { opacity: 0.9; transform: translateY(-1px); }
+    .login-error { color: #ef9a9a; font-size: 0.85rem; margin-top: 8px; }
+
+    /* ── MAIN CONTENT ── */
     #dashboard { display: none; }
-    .money-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
-    .money-box { background: #e8f0fe; border-radius: 10px; padding: 14px; text-align: center; }
-    .money-box .val { font-size: 1.6rem; font-weight: 900; color: #1a73e8; }
-    .money-box .lbl { font-size: 0.8rem; color: #666; }
-    .progress-bar-wrap { background: #eee; border-radius: 20px; height: 28px; overflow: hidden; position: relative; margin: 10px 0; }
-    .progress-bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, #1a73e8, #0d47a1); transition: width 0.4s; display: flex; align-items: center; padding-left: 10px; color: white; font-size: 0.8rem; font-weight: 700; min-width: 30px; }
-    .book-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
-    .book-item { background: #f0f4ff; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
-    .book-cover { width: 40px; height: 56px; background: #1a73e8; border-radius: 4px; object-fit: cover; }
-    .book-cover-placeholder { width: 40px; height: 56px; background: #bbdefb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-    .book-title { font-size: 0.9rem; font-weight: 600; max-width: 120px; }
-    .book-actions { display: flex; gap: 4px; }
-    .book-btn { border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 0.8rem; }
-    .btn-finish { background: #27ae60; color: white; }
-    .btn-remove { background: #e74c3c; color: white; }
-    .btn-add { background: #1a73e8; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 10px; }
-    .add-form { display: flex; gap: 8px; margin-top: 10px; position: relative; }
-    .add-form input { flex: 1; padding: 8px 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
-    .add-form input:focus { outline: none; border-color: #1a73e8; }
-    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 60px; background: white; border: 1px solid #ddd; border-radius: 8px; z-index: 100; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .autocomplete-item { padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-    .autocomplete-item:hover { background: #f0f4ff; }
-    .autocomplete-thumb { width: 28px; height: 40px; object-fit: cover; border-radius: 3px; background: #eee; }
-    .letter-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-    .invest-calc { background: #f0f4ff; border-radius: 10px; padding: 14px; margin-top: 14px; }
-    .invest-calc p { margin-bottom: 8px; font-size: 0.95rem; }
-    .invest-calc input { width: 80px; padding: 6px; border: 2px solid #ddd; border-radius: 6px; font-size: 0.95rem; text-align: center; }
-    .invest-result { font-weight: 700; color: #1a73e8; font-size: 1rem; }
+    .content { max-width: 960px; margin: 0 auto; padding: 10px 20px 40px; }
+
+    .card {
+      background: #1a2744;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid #1e3a6e;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      border-bottom: 2px solid #1565c0;
+      padding-bottom: 10px;
+    }
+    .card-header h2 { font-size: 1.2rem; color: #64b5f6; }
+    .card-icon { font-size: 1.4rem; }
+
+    /* ── MONEY SECTION ── */
+    .money-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .money-tile {
+      background: #0d1b2a;
+      border: 1px solid #1e3a6e;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .money-tile .amount { font-size: 2rem; font-weight: 900; color: #42a5f5; }
+    .money-tile .label { font-size: 0.78rem; color: #7896b8; margin-top: 4px; }
+
+    .progress-section { margin-bottom: 16px; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #90caf9;
+      margin-bottom: 6px;
+    }
+    .progress-track {
+      background: #0d1b2a;
+      border-radius: 20px;
+      height: 32px;
+      overflow: hidden;
+      border: 1px solid #1e3a6e;
+      position: relative;
+    }
+    .progress-yesday {
+      height: 100%;
+      background: linear-gradient(90deg, #1565c0, #42a5f5);
+      border-radius: 20px;
+      transition: width 0.6s ease;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: white;
+      white-space: nowrap;
+      min-width: 36px;
+    }
+    .greenlight-box {
+      background: linear-gradient(135deg, #0d47a1, #1565c0);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .greenlight-box .gl-icon { font-size: 1.8rem; }
+    .greenlight-box .gl-text { font-size: 0.88rem; color: #90caf9; }
+    .greenlight-box .gl-amount { font-size: 1.4rem; font-weight: 900; color: #64ffda; }
+
+    .week-earnings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .week-earnings-table th {
+      background: #0d1b2a;
+      color: #64b5f6;
+      padding: 8px;
+      text-align: center;
+      border: 1px solid #1e3a6e;
+    }
+    .week-earnings-table td {
+      padding: 7px 8px;
+      text-align: center;
+      border: 1px solid #1e3a6e;
+      color: #c5d8f0;
+    }
+    .week-earnings-table tr:nth-child(even) td { background: #0f1f38; }
+    .earn-pos { color: #66bb6a; font-weight: 700; }
+    .earn-zero { color: #546e7a; }
+
+    .invest-box {
+      background: #0d1b2a;
+      border: 1px solid #1e3a6e;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .invest-box p { font-size: 0.9rem; color: #90caf9; margin-bottom: 8px; }
+    .invest-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .invest-row input {
+      width: 80px; padding: 8px; border: 2px solid #1e3a6e;
+      border-radius: 8px; font-size: 1rem; text-align: center;
+      background: #1a2744; color: #e0e8ff;
+    }
+    .invest-row input:focus { outline: none; border-color: #1565c0; }
+    .invest-result { font-size: 1.3rem; font-weight: 900; color: #64ffda; }
+    .invest-note { font-size: 0.75rem; color: #546e7a; margin-top: 6px; }
+
+    /* ── READING TOGETHER ── */
+    .together-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+    }
+    .together-tile {
+      background: #0d1b2a;
+      border: 1px solid #1e3a6e;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .together-tile .sibling-img {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #1565c0;
+      margin-bottom: 8px;
+    }
+    .together-tile .sibling-placeholder {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: #1565c0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin: 0 auto 8px;
+    }
+    .together-tile .stars-count { font-size: 1.6rem; font-weight: 900; color: #ffd54f; }
+    .together-tile .mins-label { font-size: 0.8rem; color: #7896b8; }
+    .together-tile .direction { font-size: 0.75rem; color: #546e7a; margin-top: 2px; }
+
+    /* ── BOOKS ── */
+    .book-add-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .book-add-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 2px solid #1e3a6e;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: #0d1b2a;
+      color: #e0e8ff;
+    }
+    .book-add-row input:focus { outline: none; border-color: #1565c0; }
+    .btn-add-book {
+      background: #1565c0;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-add-book:hover { background: #1976d2; }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 90px;
+      background: #1a2744;
+      border: 1px solid #1565c0;
+      border-radius: 10px;
+      z-index: 200;
+      max-height: 220px;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .ac-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      color: #c5d8f0;
+      border-bottom: 1px solid #1e3a6e;
+    }
+    .ac-item:last-child { border-bottom: none; }
+    .ac-item:hover { background: #0d1b2a; }
+    .ac-thumb { width: 30px; height: 42px; object-fit: cover; border-radius: 3px; }
+    .ac-thumb-placeholder { width: 30px; height: 42px; background: #1565c0; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+
+    .bookshelf {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .book-card {
+      background: #0d1b2a;
+      border: 1px solid #1e3a6e;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 100px;
+      position: relative;
+    }
+    .book-cover-img {
+      width: 60px; height: 85px;
+      object-fit: cover;
+      border-radius: 4px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    }
+    .book-cover-ph {
+      width: 60px; height: 85px;
+      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    }
+    .book-title-text {
+      font-size: 0.72rem;
+      text-align: center;
+      color: #c5d8f0;
+      line-height: 1.3;
+      max-height: 42px;
+      overflow: hidden;
+    }
+    .book-btns {
+      display: flex;
+      gap: 4px;
+    }
+    .bk-btn {
+      border: none;
+      border-radius: 6px;
+      padding: 3px 7px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .bk-finish { background: #2e7d32; color: white; }
+    .bk-remove { background: #c62828; color: white; }
+    .bk-minus { background: #555; color: white; }
+    .books-empty { color: #546e7a; font-style: italic; font-size: 0.9rem; padding: 10px 0; }
+    .finished-count-badge {
+      background: #1565c0;
+      color: white;
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-left: 10px;
+      font-weight: 700;
+    }
+
+    /* ── LETTERS ── */
+    .letters-count-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .letters-big { font-size: 2rem; font-weight: 900; color: #42a5f5; }
+    .edit-link {
+      color: #64b5f6;
+      text-decoration: none;
+      font-size: 0.85rem;
+      border: 1px solid #1565c0;
+      padding: 5px 12px;
+      border-radius: 8px;
+    }
+    .edit-link:hover { background: #1565c0; color: white; }
+    .letter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 12px;
+      background: #0d1b2a;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      font-size: 0.88rem;
+    }
+    .letter-to { color: #c5d8f0; }
+    .letter-date { color: #546e7a; font-size: 0.82rem; }
+    .letter-earn { color: #66bb6a; font-weight: 700; }
+
+    /* ── ANIMATIONS ── */
+    .money-float {
+      position: fixed;
+      font-size: 1.8rem;
+      pointer-events: none;
+      z-index: 9999;
+      animation: floatUp 1.5s ease forwards;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-100px) scale(1.3); }
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <img src="Soren.jpg" alt="Soren" onerror="this.style.display='none'" />
-    <div><h1>Soren's Dashboard 🔵</h1><p style="opacity:0.85;font-size:0.9rem">Baca Summer Challenge 2026</p></div>
+
+<!-- HEADER (shown always) -->
+<div class="header">
+  <div class="header-bg"></div>
+  <div class="header-inner">
+    <img src="Soren.jpg" alt="Soren" class="header-avatar" onerror="this.style.display='none'" />
+    <div class="header-text">
+      <h1>Soren's Dashboard 🔵</h1>
+      <p>Baca Summer Challenge 2026 · Age 11</p>
+    </div>
+    <div class="header-stats" id="header-stats" style="display:none">
+      <div class="header-stat">
+        <div class="stat-val" id="hdr-total">$0</div>
+        <div class="stat-lbl">Total Earned</div>
+      </div>
+      <div class="header-stat">
+        <div class="stat-val" id="hdr-books">0</div>
+        <div class="stat-lbl">Books Finished</div>
+      </div>
+    </div>
   </div>
-  <a class="back-link" href="index.html">← Back to Main Page</a>
+</div>
+
+<a class="back-link" href="index.html">← Back to Main Page</a>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <h2>🔒 Soren's Page</h2>
+    <p>Enter your password to continue</p>
+    <input type="password" id="pass-input" placeholder="••••••••" autocomplete="off" />
+    <button class="btn-login" onclick="checkPassword()">Enter 🚀</button>
+    <div class="login-error" id="pass-error"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
   <div class="content">
 
-    <!-- PASSWORD -->
-    <div class="card" id="login-card">
-      <h2>🔒 Enter your password</h2>
-      <input type="password" id="pass-input" placeholder="Password" autocomplete="off" />
-      <button class="btn" onclick="checkPassword()">Go!</button>
-      <div class="error" id="pass-error"></div>
+    <!-- (1) MONEY -->
+    <div class="card">
+      <div class="card-header"><span class="card-icon">💰</span><h2>Money Earned This Summer</h2></div>
+
+      <div class="money-grid">
+        <div class="money-tile"><div class="amount" id="total-earned">$0</div><div class="label">Total Earned</div></div>
+        <div class="money-tile"><div class="amount" id="reading-earned">$0</div><div class="label">📚 From Reading</div></div>
+        <div class="money-tile"><div class="amount" id="letter-earned">$0</div><div class="label">✉️ From Letters</div></div>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-label">
+          <span>Only Child Yes Day Fund</span>
+          <span id="yesday-label">$0 / $100</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-yesday" id="progress-bar" style="width:0%">$0</div>
+        </div>
+      </div>
+
+      <div class="greenlight-box">
+        <span class="gl-icon">📈</span>
+        <div>
+          <div class="gl-text">Greenlight Investment Account</div>
+          <div class="gl-amount" id="invest-amount">$0</div>
+        </div>
+      </div>
+
+      <!-- Week by week table -->
+      <details style="margin-bottom:16px">
+        <summary style="cursor:pointer;color:#64b5f6;font-size:0.9rem;margin-bottom:8px">▶ Week-by-Week Breakdown</summary>
+        <table class="week-earnings-table" id="week-table">
+          <thead>
+            <tr><th>Week</th><th>Minutes Read</th><th>Target</th><th>Extra</th><th>From Reading</th><th>From Letters</th><th>Week Total</th></tr>
+          </thead>
+          <tbody id="week-tbody"></tbody>
+        </table>
+      </details>
+
+      <!-- Compound interest -->
+      <div class="invest-box">
+        <p>💹 Compound Interest Calculator (7% annual return)</p>
+        <div class="invest-row">
+          <span style="color:#90caf9">When I am</span>
+          <input type="number" id="invest-age" min="13" max="80" placeholder="age" oninput="calcInvest()" />
+          <span style="color:#90caf9">years old, my Greenlight investment could be worth:</span>
+          <span class="invest-result" id="invest-result">$—</span>
+        </div>
+        <div class="invest-note">Based on $<span id="invest-principal">0</span> invested today at 7%/year · Soren is 11 (born ~2015)</div>
+      </div>
     </div>
 
-    <!-- DASHBOARD -->
-    <div id="dashboard">
+    <!-- (2) READING TOGETHER -->
+    <div class="card">
+      <div class="card-header"><span class="card-icon">🤝</span><h2>Reading Together</h2></div>
+      <div class="together-grid" id="together-grid"></div>
+    </div>
 
-      <!-- (1) MONEY EARNED -->
-      <div class="card">
-        <h2>💰 Money Earned This Summer</h2>
-        <div class="money-summary">
-          <div class="money-box"><div class="val" id="total-earned">$0</div><div class="lbl">Total Earned</div></div>
-          <div class="money-box"><div class="val" id="reading-earned">$0</div><div class="lbl">From Reading</div></div>
-          <div class="money-box"><div class="val" id="letter-earned">$0</div><div class="lbl">From Letters</div></div>
-          <div class="money-box"><div class="val" id="invest-amount">$0</div><div class="lbl">💹 Greenlight</div></div>
-        </div>
-        <p style="font-size:0.85rem;color:#666;margin-bottom:6px">Progress toward $100 Only Child Yes Day</p>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="progress-bar" style="width:0%">$0</div>
-        </div>
-        <div class="invest-calc">
-          <p>💹 When I am <input type="number" id="invest-age" min="13" max="80" placeholder="age" oninput="calcInvest()" /> years old, this could be worth: <span class="invest-result" id="invest-result">$—</span></p>
-          <p style="font-size:0.75rem;color:#888">Assumes 7% annual stock market return on Greenlight amount</p>
-        </div>
+    <!-- (3) CURRENTLY READING -->
+    <div class="card">
+      <div class="card-header"><span class="card-icon">📖</span><h2>Currently Reading</h2></div>
+      <div class="book-add-row">
+        <input type="text" id="current-input" placeholder="Search for a book title..." autocomplete="off" oninput="bookSearch(this, 'current-ac')" onkeydown="if(event.key==='Enter')addBook('current')" />
+        <div class="autocomplete-dropdown" id="current-ac" style="display:none"></div>
+        <button class="btn-add-book" onclick="addBook('current')">+ Add</button>
       </div>
+      <div class="bookshelf" id="current-books"><p class="books-empty">No books yet — add one above!</p></div>
+    </div>
 
-      <!-- (2) READING TOGETHER -->
-      <div class="card">
-        <h2>🤝 Reading Together</h2>
-        <div id="reading-together-soren" class="placeholder">Loading reading together data...</div>
+    <!-- (4) FINISHED READING -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">✅</span>
+        <h2>Finished Reading!</h2>
+        <span class="finished-count-badge" id="finished-badge">0 books</span>
       </div>
+      <div class="book-add-row">
+        <input type="text" id="finished-input" placeholder="Add a finished book..." autocomplete="off" oninput="bookSearch(this, 'finished-ac')" onkeydown="if(event.key==='Enter')addBook('finished')" />
+        <div class="autocomplete-dropdown" id="finished-ac" style="display:none"></div>
+        <button class="btn-add-book" onclick="addBook('finished')">+ Add</button>
+      </div>
+      <div class="bookshelf" id="finished-books"><p class="books-empty">No finished books yet — keep reading!</p></div>
+    </div>
 
-      <!-- (3) CURRENTLY READING -->
-      <div class="card">
-        <h2>📖 Currently Reading</h2>
-        <div class="add-form" style="position:relative">
-          <input type="text" id="current-input" placeholder="Search for a book..." autocomplete="off" oninput="bookSearch(this,'current-ac')" />
-          <div class="autocomplete-list" id="current-ac" style="display:none"></div>
-          <button class="btn-add" onclick="addBook('current')">+ Add</button>
+    <!-- (5) WANT TO READ -->
+    <div class="card">
+      <div class="card-header"><span class="card-icon">🔖</span><h2>Want to Read</h2></div>
+      <div class="book-add-row">
+        <input type="text" id="want-input" placeholder="Add a book to your wish list..." autocomplete="off" oninput="bookSearch(this, 'want-ac')" onkeydown="if(event.key==='Enter')addBook('want')" />
+        <div class="autocomplete-dropdown" id="want-ac" style="display:none"></div>
+        <button class="btn-add-book" onclick="addBook('want')">+ Add</button>
+      </div>
+      <div class="bookshelf" id="want-books"><p class="books-empty">Nothing on the list yet!</p></div>
+    </div>
+
+    <!-- (6) LETTERS WRITTEN -->
+    <div class="card">
+      <div class="card-header"><span class="card-icon">✉️</span><h2>Letters Written</h2></div>
+      <div class="letters-count-row">
+        <div>
+          <span class="letters-big" id="letters-count">0</span>
+          <span style="color:#7896b8;font-size:0.9rem"> letters · </span>
+          <span style="color:#66bb6a;font-weight:700" id="letters-earn-total">$0 earned</span>
         </div>
-        <div class="book-list" id="current-books"></div>
+        <a href="edit-letters.html?kid=soren" class="edit-link">✏️ Edit</a>
       </div>
+      <div id="letters-list"></div>
+    </div>
 
-      <!-- (4) FINISHED READING -->
-      <div class="card">
-        <h2>✅ Finished Reading!</h2>
-        <p style="color:#888;font-size:0.85rem;margin-bottom:10px">Books finished: <strong id="finished-count">0</strong></p>
-        <div class="add-form">
-          <input type="text" id="finished-input" placeholder="Add a finished book..." autocomplete="off" oninput="bookSearch(this,'finished-ac')" />
-          <div class="autocomplete-list" id="finished-ac" style="display:none"></div>
-          <button class="btn-add" onclick="addBook('finished')">+ Add</button>
-        </div>
-        <div class="book-list" id="finished-books"></div>
-      </div>
-
-      <!-- (5) WANT TO READ -->
-      <div class="card">
-        <h2>🔖 Want to Read</h2>
-        <div class="add-form">
-          <input type="text" id="want-input" placeholder="Add a book to your list..." autocomplete="off" oninput="bookSearch(this,'want-ac')" />
-          <div class="autocomplete-list" id="want-ac" style="display:none"></div>
-          <button class="btn-add" onclick="addBook('want')">+ Add</button>
-        </div>
-        <div class="book-list" id="want-books"></div>
-      </div>
-
-      <!-- (6) LETTERS WRITTEN -->
-      <div class="card">
-        <h2>✉️ Letters Written</h2>
-        <p style="margin-bottom:10px">Letters written: <strong id="letters-count">0</strong> &nbsp;|&nbsp; <a href="edit-letters.html?kid=soren" style="color:#1a73e8;font-size:0.85rem">Edit</a></p>
-        <div id="letters-list"></div>
-      </div>
-
-    </div><!-- /dashboard -->
   </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD8iBh-PYw7-_SQrrm-CEIj6i3ylDKZhYc",
-      authDomain: "baca-summer-2026.firebaseapp.com",
-      projectId: "baca-summer-2026",
-      storageBucket: "baca-summer-2026.firebasestorage.app",
-      messagingSenderId: "866437593459",
-      appId: "1:866437593459:web:3faf11675f8abd7cba2d06"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyD8iBh-PYw7-_SQrrm-CEIj6i3ylDKZhYc",
+    authDomain: "baca-summer-2026.firebaseapp.com",
+    projectId: "baca-summer-2026",
+    storageBucket: "baca-summer-2026.firebasestorage.app",
+    messagingSenderId: "866437593459",
+    appId: "1:866437593459:web:3faf11675f8abd7cba2d06"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    const KID = 'soren';
-    const BOOKS_API = 'AIzaSyANkUd8O2JwNTNr-iXv3jEWXbdah-m2nWs';
-    const CURRENT_AGE = 11;
-    const BIRTH_YEAR = 2015;
-    let cfg = {};
-    let readingData = {};
-    let starsData = {};
-    let booksData = { current: [], finished: [], want: [] };
-    let lettersData = [];
+  const KID = 'soren';
+  const BOOKS_API_KEY = 'AIzaSyANkUd8O2JwNTNr-iXv3jEWXbdah-m2nWs';
+  const CURRENT_AGE = 11;
+  const MIN_INVEST_AGE = 13;
 
-    const WEEK_DATES = generateWeekDates();
-    function generateWeekDates() {
-      const weeks = [];
-      const start = new Date('2026-06-08T12:00:00');
-      for (let w = 0; w < 9; w++) {
-        const days = [];
-        for (let d = 0; d < 7; d++) {
-          const dt = new Date(start);
-          dt.setDate(start.getDate() + w * 7 + d);
-          days.push(dt.toISOString().split('T')[0]);
-        }
-        weeks.push(days);
+  let cfg = {};
+  let readingData = {};
+  let starsData = {};
+  let booksData = { current: [], finished: [], want: [] };
+  let lettersData = [];
+
+  const WEEK_DATES = (() => {
+    const weeks = [];
+    const start = new Date('2026-06-08T12:00:00');
+    for (let w = 0; w < 9; w++) {
+      const days = [];
+      for (let d = 0; d < 7; d++) {
+        const dt = new Date(start);
+        dt.setDate(start.getDate() + w * 7 + d);
+        days.push(dt.toISOString().split('T')[0]);
       }
-      return weeks;
+      weeks.push(days);
     }
+    return weeks;
+  })();
 
-    async function loadAll() {
-      const cfgSnap = await getDoc(doc(db, 'config', 'numbers'));
-      if (cfgSnap.exists()) cfg = cfgSnap.data();
-
-      const readSnap = await getDocs(collection(db, 'reading'));
-      readSnap.forEach(d => { readingData[d.id] = d.data(); });
-
-      const starsSnap = await getDocs(collection(db, 'stars'));
-      starsSnap.forEach(d => { starsData[d.id] = d.data(); });
-
-      const booksSnap = await getDoc(doc(db, 'books', KID));
-      if (booksSnap.exists()) booksData = { current: [], finished: [], want: [], ...booksSnap.data() };
-
-      const lettersSnap = await getDocs(collection(db, 'letters'));
-      lettersData = [];
-      lettersSnap.forEach(d => { if (d.data().from === KID) lettersData.push({ id: d.id, ...d.data() }); });
+  // ── PASSWORD ──
+  window.checkPassword = async function () {
+    const snap = await getDoc(doc(db, 'config', 'numbers'));
+    cfg = snap.exists() ? snap.data() : {};
+    const val = document.getElementById('pass-input').value.trim();
+    if (val === cfg.passwords?.[KID]) {
+      document.getElementById('login-wrap').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      document.getElementById('header-stats').style.display = 'flex';
+      await loadAll();
+      renderAll();
+      listenUpdates();
+    } else {
+      document.getElementById('pass-error').textContent = 'Wrong password — try again!';
     }
+  };
+  document.getElementById('pass-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.checkPassword(); });
 
-    window.checkPassword = async function() {
-      const cfgSnap = await getDoc(doc(db, 'config', 'numbers'));
-      if (cfgSnap.exists()) cfg = cfgSnap.data();
-      const input = document.getElementById('pass-input').value.trim();
-      if (input === cfg.passwords?.[KID]) {
-        document.getElementById('login-card').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        await loadAll();
-        renderAll();
-        listenUpdates();
-      } else {
-        document.getElementById('pass-error').textContent = 'Wrong password, try again!';
-      }
-    };
-    document.getElementById('pass-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.checkPassword(); });
+  // ── LOAD ──
+  async function loadAll() {
+    const cfgSnap = await getDoc(doc(db, 'config', 'numbers'));
+    if (cfgSnap.exists()) cfg = cfgSnap.data();
 
-    function listenUpdates() {
-      onSnapshot(collection(db, 'reading'), snap => {
-        snap.docChanges().forEach(c => { readingData[c.doc.id] = c.doc.data(); });
-        renderMoney();
-      });
-      onSnapshot(collection(db, 'stars'), snap => {
-        snap.docChanges().forEach(c => { starsData[c.doc.id] = c.doc.data(); });
-        renderReadingTogether();
-      });
-      onSnapshot(collection(db, 'letters'), snap => {
-        lettersData = [];
-        snap.forEach(d => { if (d.data().from === KID) lettersData.push({ id: d.id, ...d.data() }); });
-        renderLetters();
-        renderMoney();
-      });
-    }
+    const readSnap = await getDocs(collection(db, 'reading'));
+    readSnap.forEach(d => { readingData[d.id] = d.data(); });
 
-    function renderAll() {
+    const starsSnap = await getDocs(collection(db, 'stars'));
+    starsSnap.forEach(d => { starsData[d.id] = d.data(); });
+
+    const booksSnap = await getDoc(doc(db, 'books', KID));
+    if (booksSnap.exists()) booksData = { current: [], finished: [], want: [], ...booksSnap.data() };
+
+    const lettersSnap = await getDocs(collection(db, 'letters'));
+    lettersData = [];
+    lettersSnap.forEach(d => { if (d.data().from === KID) lettersData.push({ id: d.id, ...d.data() }); });
+  }
+
+  function listenUpdates() {
+    onSnapshot(collection(db, 'reading'), snap => {
+      snap.docChanges().forEach(c => { readingData[c.doc.id] = c.doc.data(); });
       renderMoney();
-      renderReadingTogether();
-      renderBooks('current');
-      renderBooks('finished');
-      renderBooks('want');
-      renderLetters();
-    }
+    });
+    onSnapshot(collection(db, 'stars'), snap => {
+      snap.docChanges().forEach(c => { starsData[c.doc.id] = c.doc.data(); });
+      renderTogether();
+    });
+    onSnapshot(collection(db, 'letters'), snap => {
+      lettersData = [];
+      snap.forEach(d => { if (d.data().from === KID) lettersData.push({ id: d.id, ...d.data() }); });
+      renderLetters(); renderMoney();
+    });
+  }
 
-    function calcReadingEarnings() {
-      const target = cfg.weeklyTargets?.[KID] || 150;
-      const session = cfg.sessionMinutes?.[KID] || 30;
-      const perSession = cfg.moneyPerSession || 5;
-      let total = 0;
-      let runningDeficit = 0;
-      for (let w = 0; w < 9; w++) {
-        const weekTotal = WEEK_DATES[w].reduce((s, d) => s + Number(readingData[d]?.[KID] || 0), 0);
-        if (weekTotal < target) {
-          runningDeficit += (target - weekTotal);
-        } else {
-          const excess = weekTotal - target;
-          const applied = Math.min(excess, runningDeficit);
-          runningDeficit = Math.max(0, runningDeficit - excess);
-          const earnable = excess - applied;
-          total += Math.floor(earnable / session) * perSession;
-        }
+  function renderAll() {
+    renderMoney();
+    renderTogether();
+    renderBooks('current');
+    renderBooks('finished');
+    renderBooks('want');
+    renderLetters();
+  }
+
+  // ── MONEY CALC (with proper deficit tracking) ──
+  function calcEarnings() {
+    const target = cfg.weeklyTargets?.[KID] || 150;
+    const session = cfg.sessionMinutes?.[KID] || 30;
+    const perSession = cfg.moneyPerSession || 5;
+    const perLetter = cfg.moneyPerLetter || 2;
+    let readingTotal = 0;
+    let deficit = 0;
+    const weekBreakdown = [];
+
+    for (let w = 0; w < 9; w++) {
+      const weekMins = WEEK_DATES[w].reduce((s, d) => s + Number(readingData[d]?.[KID] || 0), 0);
+      let weekEarn = 0;
+      if (weekMins < target) {
+        deficit += (target - weekMins);
+      } else {
+        const excess = weekMins - target;
+        const applied = Math.min(excess, deficit);
+        deficit = Math.max(0, deficit - excess);
+        const earnable = excess - applied;
+        weekEarn = Math.floor(earnable / session) * perSession;
+        readingTotal += weekEarn;
       }
-      return total;
+      weekBreakdown.push({ week: w + 1, mins: weekMins, target, earn: weekEarn });
     }
 
-    function renderMoney() {
-      const readingEarnings = calcReadingEarnings();
-      const letterEarnings = lettersData.length * (cfg.moneyPerLetter || 2);
-      const total = readingEarnings + letterEarnings;
-      const yesdayGoal = cfg.yesdayGoal || 100;
-      const yesdayAmount = Math.min(total, yesdayGoal);
-      const investAmount = Math.max(0, total - yesdayGoal);
+    const letterTotal = lettersData.length * perLetter;
+    return { readingTotal, letterTotal, total: readingTotal + letterTotal, weekBreakdown };
+  }
 
-      document.getElementById('total-earned').textContent = `$${total}`;
-      document.getElementById('reading-earned').textContent = `$${readingEarnings}`;
-      document.getElementById('letter-earned').textContent = `$${letterEarnings}`;
-      document.getElementById('invest-amount').textContent = `$${investAmount}`;
+  function renderMoney() {
+    const { readingTotal, letterTotal, total, weekBreakdown } = calcEarnings();
+    const goal = cfg.yesdayGoal || 100;
+    const yesdayAmt = Math.min(total, goal);
+    const investAmt = Math.max(0, total - goal);
 
-      const pct = Math.min(100, (yesdayAmount / yesdayGoal) * 100);
-      const bar = document.getElementById('progress-bar');
-      bar.style.width = `${pct}%`;
-      bar.textContent = `$${yesdayAmount}`;
+    document.getElementById('total-earned').textContent = `$${total}`;
+    document.getElementById('reading-earned').textContent = `$${readingTotal}`;
+    document.getElementById('letter-earned').textContent = `$${letterTotal}`;
+    document.getElementById('invest-amount').textContent = `$${investAmt}`;
+    document.getElementById('hdr-total').textContent = `$${total}`;
 
-      window._investAmount = investAmount;
+    const pct = Math.min(100, (yesdayAmt / goal) * 100);
+    const bar = document.getElementById('progress-bar');
+    bar.style.width = `${Math.max(pct, 2)}%`;
+    bar.textContent = `$${yesdayAmt}`;
+    document.getElementById('yesday-label').textContent = `$${yesdayAmt} / $${goal}`;
+    document.getElementById('invest-principal').textContent = investAmt;
+    window._investAmt = investAmt;
+
+    // Week table
+    const tbody = document.getElementById('week-tbody');
+    tbody.innerHTML = '';
+    const weekLetters = Array(9).fill(0);
+    lettersData.forEach(l => {
+      const date = l.date;
+      for (let w = 0; w < 9; w++) {
+        if (WEEK_DATES[w].includes(date)) { weekLetters[w]++; break; }
+      }
+    });
+    weekBreakdown.forEach((row, i) => {
+      const letterEarn = weekLetters[i] * (cfg.moneyPerLetter || 2);
+      const weekTotal = row.earn + letterEarn;
+      const extra = Math.max(0, row.mins - row.target);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>Week ${row.week}</td>
+        <td>${row.mins}</td>
+        <td>${row.target}</td>
+        <td>${extra > 0 ? extra : '—'}</td>
+        <td class="${row.earn > 0 ? 'earn-pos' : 'earn-zero'}">${row.earn > 0 ? '$' + row.earn : '—'}</td>
+        <td class="${letterEarn > 0 ? 'earn-pos' : 'earn-zero'}">${letterEarn > 0 ? '$' + letterEarn : '—'}</td>
+        <td class="${weekTotal > 0 ? 'earn-pos' : 'earn-zero'}">${weekTotal > 0 ? '$' + weekTotal : '—'}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  window.calcInvest = function () {
+    const age = parseInt(document.getElementById('invest-age').value);
+    if (isNaN(age) || age < MIN_INVEST_AGE) {
+      document.getElementById('invest-result').textContent = `(min age ${MIN_INVEST_AGE})`;
+      return;
     }
+    const years = age - CURRENT_AGE;
+    if (years <= 0) { document.getElementById('invest-result').textContent = '—'; return; }
+    const future = (window._investAmt || 0) * Math.pow(1.07, years);
+    document.getElementById('invest-result').textContent = `$${future.toFixed(2)}`;
+  };
 
-    window.calcInvest = function() {
-      const age = parseInt(document.getElementById('invest-age').value);
-      const minAge = 13;
-      if (isNaN(age) || age < minAge) { document.getElementById('invest-result').textContent = `(min age ${minAge})`; return; }
-      const currentAge = CURRENT_AGE;
-      const years = age - currentAge;
-      if (years <= 0) { document.getElementById('invest-result').textContent = '—'; return; }
-      const amount = window._investAmount || 0;
-      const future = amount * Math.pow(1.07, years);
-      document.getElementById('invest-result').textContent = `$${future.toFixed(2)}`;
-    };
+  // ── READING TOGETHER ──
+  function renderTogether() {
+    const sm = cfg.starMinutes || { sorenToAdele: 10, reedToAdele: 10, adeleToReed: 5, adeleToSoren: 5 };
+    let sorenToAdele = 0;
+    Object.values(starsData).forEach(day => { if (day.sorenToAdele) sorenToAdele++; });
 
-    function renderReadingTogether() {
-      const el = document.getElementById('reading-together-soren');
-      let sorenToAdele = 0;
-      Object.values(starsData).forEach(day => {
-        if (day.sorenToAdele) sorenToAdele++;
-      });
-      const minToAdele = sorenToAdele * (cfg.starMinutes?.sorenToAdele || 10);
-      el.innerHTML = `
-        <div style="display:flex;gap:20px;flex-wrap:wrap">
-          <div style="background:#e8f0fe;border-radius:10px;padding:14px;text-align:center;min-width:140px">
-            <div style="font-size:1.4rem;font-weight:900;color:#1a73e8">${sorenToAdele} ⭐</div>
-            <div style="font-size:0.85rem;color:#666">Times Soren read to Adele</div>
-            <div style="font-size:0.8rem;color:#888">(${minToAdele} min)</div>
-          </div>
-        </div>`;
-    }
+    const grid = document.getElementById('together-grid');
+    grid.innerHTML = `
+      <div class="together-tile">
+        <img src="Adele.jpg" class="sibling-img" onerror="this.style.display='none'" />
+        <div class="stars-count">${sorenToAdele} ⭐</div>
+        <div class="mins-label">${sorenToAdele * sm.sorenToAdele} minutes</div>
+        <div class="direction">Soren read to Adele</div>
+      </div>`;
+  }
 
-    // ── BOOKS ──
-    async function saveBooks() {
-      await setDoc(doc(db, 'books', KID), booksData);
-    }
+  // ── BOOKS ──
+  async function saveBooks() {
+    await setDoc(doc(db, 'books', KID), booksData);
+  }
 
-    window.bookSearch = async function(input, acId) {
-      const q = input.value.trim();
-      const ac = document.getElementById(acId);
-      if (q.length < 2) { ac.style.display = 'none'; return; }
+  let acDebounce = {};
+  window.bookSearch = async function (input, acId) {
+    const q = input.value.trim();
+    const ac = document.getElementById(acId);
+    if (q.length < 2) { ac.style.display = 'none'; return; }
+    clearTimeout(acDebounce[acId]);
+    acDebounce[acId] = setTimeout(async () => {
       try {
-        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=5&key=${BOOKS_API}`);
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&key=${BOOKS_API_KEY}`);
         const data = await res.json();
         ac.innerHTML = '';
-        if (!data.items || data.items.length === 0) { ac.style.display = 'none'; return; }
+        if (!data.items || data.items.length === 0) {
+          // Allow free-text entry even with no results
+          ac.style.display = 'none';
+          return;
+        }
         data.items.forEach(item => {
           const info = item.volumeInfo;
-          const thumb = info.imageLinks?.thumbnail || '';
+          const thumb = info.imageLinks?.thumbnail?.replace('http://', 'https://') || '';
           const div = document.createElement('div');
-          div.className = 'autocomplete-item';
+          div.className = 'ac-item';
           div.innerHTML = thumb
-            ? `<img src="${thumb}" class="autocomplete-thumb" /><span>${info.title}${info.authors ? ' — ' + info.authors[0] : ''}</span>`
-            : `<span>📚 ${info.title}${info.authors ? ' — ' + info.authors[0] : ''}</span>`;
-          div.addEventListener('click', () => {
+            ? `<img src="${thumb}" class="ac-thumb" /><span>${info.title}${info.authors ? ' <em style="color:#546e7a">— ' + info.authors[0] + '</em>' : ''}</span>`
+            : `<div class="ac-thumb-placeholder">📚</div><span>${info.title}</span>`;
+          div.addEventListener('mousedown', e => {
+            e.preventDefault();
             input.value = info.title;
             input.dataset.thumb = thumb;
             ac.style.display = 'none';
@@ -340,83 +828,99 @@
           ac.appendChild(div);
         });
         ac.style.display = 'block';
-      } catch(e) { ac.style.display = 'none'; }
-    };
+      } catch (e) { ac.style.display = 'none'; }
+    }, 300);
+  };
 
-    document.addEventListener('click', e => {
-      document.querySelectorAll('.autocomplete-list').forEach(ac => {
-        if (!ac.contains(e.target)) ac.style.display = 'none';
-      });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.autocomplete-dropdown').forEach(ac => { ac.style.display = 'none'; });
+  });
+
+  window.addBook = async function (list) {
+    const input = document.getElementById(`${list}-input`);
+    const title = input.value.trim();
+    if (!title) return;
+    const thumb = input.dataset.thumb || '';
+    booksData[list] = booksData[list] || [];
+    booksData[list].push({ title, thumb, addedAt: new Date().toISOString() });
+    input.value = '';
+    input.dataset.thumb = '';
+    document.getElementById(`${list}-ac`).style.display = 'none';
+    await saveBooks();
+    renderBooks(list);
+  };
+
+  window.removeBook = async function (list, idx) {
+    booksData[list].splice(idx, 1);
+    await saveBooks();
+    renderBooks(list);
+  };
+
+  window.finishBook = async function (idx) {
+    const book = booksData.current.splice(idx, 1)[0];
+    booksData.finished = booksData.finished || [];
+    booksData.finished.push({ ...book, finishedAt: new Date().toISOString() });
+    await saveBooks();
+    renderBooks('current');
+    renderBooks('finished');
+    showMoneyAnim('🎉');
+  };
+
+  function renderBooks(list) {
+    const shelf = document.getElementById(`${list}-books`);
+    const books = booksData[list] || [];
+    shelf.innerHTML = '';
+    if (list === 'finished') {
+      document.getElementById('finished-badge').textContent = `${books.length} book${books.length !== 1 ? 's' : ''}`;
+      document.getElementById('hdr-books').textContent = books.length;
+    }
+    if (books.length === 0) {
+      const empties = { current: 'No books yet — add one above!', finished: 'No finished books yet — keep reading!', want: 'Nothing on the list yet!' };
+      shelf.innerHTML = `<p class="books-empty">${empties[list]}</p>`;
+      return;
+    }
+    books.forEach((book, i) => {
+      const card = document.createElement('div');
+      card.className = 'book-card';
+      const coverHtml = book.thumb
+        ? `<img src="${book.thumb}" class="book-cover-img" onerror="this.outerHTML='<div class=\\'book-cover-ph\\'>📚</div>'" />`
+        : `<div class="book-cover-ph">📚</div>`;
+      let btns = `<button class="bk-btn bk-remove" onclick="removeBook('${list}',${i})">✕</button>`;
+      if (list === 'current') btns = `<button class="bk-btn bk-finish" onclick="finishBook(${i})">✓</button>` + btns;
+      card.innerHTML = `${coverHtml}<div class="book-title-text">${book.title}</div><div class="book-btns">${btns}</div>`;
+      shelf.appendChild(card);
     });
+  }
 
-    window.addBook = async function(list) {
-      const inputId = `${list}-input`;
-      const input = document.getElementById(inputId);
-      const title = input.value.trim();
-      if (!title) return;
-      const thumb = input.dataset.thumb || '';
-      booksData[list] = booksData[list] || [];
-      booksData[list].push({ title, thumb, addedAt: new Date().toISOString() });
-      input.value = '';
-      input.dataset.thumb = '';
-      await saveBooks();
-      renderBooks(list);
-    };
-
-    window.removeBook = async function(list, idx) {
-      booksData[list].splice(idx, 1);
-      await saveBooks();
-      renderBooks(list);
-    };
-
-    window.finishBook = async function(idx) {
-      const book = booksData.current.splice(idx, 1)[0];
-      booksData.finished = booksData.finished || [];
-      booksData.finished.push({ ...book, finishedAt: new Date().toISOString() });
-      await saveBooks();
-      renderBooks('current');
-      renderBooks('finished');
-    };
-
-    function renderBooks(list) {
-      const container = document.getElementById(`${list}-books`);
-      const books = booksData[list] || [];
-      container.innerHTML = '';
-      if (list === 'finished') {
-        document.getElementById('finished-count').textContent = books.length;
-      }
-      if (books.length === 0) {
-        container.innerHTML = `<div style="color:#aaa;font-style:italic;padding:10px">No books yet — add one above!</div>`;
-        return;
-      }
-      books.forEach((book, i) => {
-        const item = document.createElement('div');
-        item.className = 'book-item';
-        const coverHtml = book.thumb
-          ? `<img src="${book.thumb}" class="book-cover" />`
-          : `<div class="book-cover-placeholder">📚</div>`;
-        let actions = `<button class="book-btn btn-remove" onclick="removeBook('${list}',${i})">✕</button>`;
-        if (list === 'current') actions = `<button class="book-btn btn-finish" onclick="finishBook(${i})">✓</button>` + actions;
-        item.innerHTML = `${coverHtml}<span class="book-title">${book.title}</span><div class="book-actions">${actions}</div>`;
-        container.appendChild(item);
-      });
+  // ── LETTERS ──
+  function renderLetters() {
+    const count = lettersData.length;
+    const earn = count * (cfg.moneyPerLetter || 2);
+    document.getElementById('letters-count').textContent = count;
+    document.getElementById('letters-earn-total').textContent = `$${earn} earned`;
+    const list = document.getElementById('letters-list');
+    list.innerHTML = '';
+    if (count === 0) {
+      list.innerHTML = '<div style="color:#546e7a;font-style:italic;padding:8px 0">No letters recorded yet.</div>';
+      return;
     }
+    [...lettersData].sort((a, b) => b.date.localeCompare(a.date)).forEach(l => {
+      const row = document.createElement('div');
+      row.className = 'letter-row';
+      row.innerHTML = `<span class="letter-to">✉️ To: <strong>${l.to}</strong></span><span class="letter-date">${l.date}</span><span class="letter-earn">+$${cfg.moneyPerLetter || 2}</span>`;
+      list.appendChild(row);
+    });
+  }
 
-    function renderLetters() {
-      document.getElementById('letters-count').textContent = lettersData.length;
-      const list = document.getElementById('letters-list');
-      list.innerHTML = '';
-      if (lettersData.length === 0) {
-        list.innerHTML = '<div style="color:#aaa;font-style:italic">No letters recorded yet.</div>';
-        return;
-      }
-      lettersData.sort((a, b) => a.date > b.date ? -1 : 1).forEach(l => {
-        const row = document.createElement('div');
-        row.className = 'letter-row';
-        row.innerHTML = `<span>To: <strong>${l.to}</strong></span><span>${l.date}</span>`;
-        list.appendChild(row);
-      });
-    }
-  </script>
+  function showMoneyAnim(icon) {
+    const div = document.createElement('div');
+    div.className = 'money-float';
+    div.textContent = icon;
+    div.style.left = `${window.innerWidth / 2}px`;
+    div.style.top = `${window.innerHeight / 2}px`;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 1600);
+  }
+</script>
 </body>
 </html>
