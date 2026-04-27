@@ -35,19 +35,6 @@
     .tab-btn.active { background: #667eea; color: white; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .week-select { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
-    .week-select select, .week-select input { padding: 8px 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
-    .week-select select:focus, .week-select input:focus { outline: none; border-color: #667eea; }
-    .override-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-    .override-table th { background: #f0f4ff; padding: 8px; text-align: center; border: 1px solid #dde; color: #555; }
-    .override-table td { padding: 7px 8px; text-align: center; border: 1px solid #eee; }
-    .override-input { width: 64px; padding: 5px; border: 1px solid #ddd; border-radius: 6px; text-align: center; font-size: 0.9rem; }
-    .override-input:focus { outline: none; border-color: #667eea; }
-    .soren-col { background: #e8f0fe; }
-    .reed-col { background: #e0f7f4; }
-    .adele-col { background: #fce4ec; }
-    .btn-save-row { background: #27ae60; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 700; }
-    .btn-save-row:hover { background: #219a52; }
     .letter-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f8f9ff; border-radius: 8px; margin-bottom: 6px; border: 1px solid #eee; }
     .letter-admin-info { font-size: 0.88rem; }
     .letter-kid-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-left: 6px; }
@@ -56,7 +43,6 @@
     .kid-adele { background: #fce4ec; color: #e91e8c; }
     .btn-del { background: #e74c3c; color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 700; }
     .btn-del:hover { background: #c0392b; }
-    .saved-flash { color: #27ae60; font-size: 0.8rem; font-weight: 700; margin-left: 8px; }
   </style>
 </head>
 <body>
@@ -77,137 +63,94 @@
 
       <!-- TABS -->
       <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('settings')">⚙️ Settings</button>
-        <button class="tab-btn" onclick="showTab('minutes')">📝 Override Minutes</button>
-        <button class="tab-btn" onclick="showTab('letters')">✉️ Manage Letters</button>
+        <button class="tab-btn active" onclick="showTab('settings', this)">⚙️ Settings</button>
+        <button class="tab-btn" onclick="showTab('letters', this)">✉️ Manage Letters</button>
       </div>
 
       <!-- TAB: SETTINGS -->
       <div class="tab-panel active" id="tab-settings">
-      <div class="card">
-        <h2>⚙️ Edit Challenge Settings</h2>
-        <p style="color:#888;font-size:0.85rem;margin-bottom:16px">Changes take effect immediately and apply retroactively.</p>
+        <div class="card">
+          <h2>⚙️ Edit Challenge Settings</h2>
+          <p style="color:#888;font-size:0.85rem;margin-bottom:16px">Changes take effect immediately and apply retroactively.</p>
 
-        <div class="section-title">Weekly Reading Targets (minutes)</div>
-        <div class="field-row">
-          <div class="field-group">
-            <label>Soren's Weekly Target</label>
-            <input type="number" id="cfg-target-soren" min="1" />
+          <div class="section-title">Weekly Reading Targets (minutes)</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Soren's Weekly Target</label>
+              <input type="number" id="cfg-target-soren" min="1" />
+            </div>
+            <div class="field-group">
+              <label>Reed's Weekly Target</label>
+              <input type="number" id="cfg-target-reed" min="1" />
+            </div>
           </div>
-          <div class="field-group">
-            <label>Reed's Weekly Target</label>
-            <input type="number" id="cfg-target-reed" min="1" />
+          <div class="field-group" style="max-width:50%">
+            <label>Adele's Weekly Target</label>
+            <input type="number" id="cfg-target-adele" min="1" />
           </div>
-        </div>
-        <div class="field-group" style="max-width:50%">
-          <label>Adele's Weekly Target</label>
-          <input type="number" id="cfg-target-adele" min="1" />
-        </div>
 
-        <div class="section-title">Earning Session Length (minutes per $5)</div>
-        <div class="field-row">
-          <div class="field-group">
-            <label>Soren's Session Length</label>
-            <input type="number" id="cfg-session-soren" min="1" />
+          <div class="section-title">Earning Session Length (minutes per $5)</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Soren's Session Length</label>
+              <input type="number" id="cfg-session-soren" min="1" />
+            </div>
+            <div class="field-group">
+              <label>Reed's Session Length</label>
+              <input type="number" id="cfg-session-reed" min="1" />
+            </div>
           </div>
-          <div class="field-group">
-            <label>Reed's Session Length</label>
-            <input type="number" id="cfg-session-reed" min="1" />
+          <div class="field-group" style="max-width:50%">
+            <label>Adele's Session Length</label>
+            <input type="number" id="cfg-session-adele" min="1" />
           </div>
-        </div>
-        <div class="field-group" style="max-width:50%">
-          <label>Adele's Session Length</label>
-          <input type="number" id="cfg-session-adele" min="1" />
-        </div>
 
-        <div class="section-title">Money Amounts</div>
-        <div class="field-row">
-          <div class="field-group">
-            <label>$ Per Reading Session</label>
-            <input type="number" id="cfg-money-session" min="0" step="0.5" />
+          <div class="section-title">Money Amounts</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>$ Per Reading Session</label>
+              <input type="number" id="cfg-money-session" min="0" step="0.5" />
+            </div>
+            <div class="field-group">
+              <label>$ Per Letter Written</label>
+              <input type="number" id="cfg-money-letter" min="0" step="0.5" />
+            </div>
           </div>
-          <div class="field-group">
-            <label>$ Per Letter Written</label>
-            <input type="number" id="cfg-money-letter" min="0" step="0.5" />
+          <div class="field-row">
+            <div class="field-group">
+              <label>$ Per Reading Star</label>
+              <input type="number" id="cfg-money-star" min="0" step="0.5" />
+            </div>
+            <div class="field-group">
+              <label>Yes Day Goal ($)</label>
+              <input type="number" id="cfg-yesday-goal" min="1" />
+            </div>
           </div>
-        </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label>$ Per Reading Star</label>
-            <input type="number" id="cfg-money-star" min="0" step="0.5" />
-          </div>
-          <div class="field-group">
-            <label>Yes Day Goal ($)</label>
-            <input type="number" id="cfg-yesday-goal" min="1" />
-          </div>
-        </div>
 
-        <div class="section-title">Passwords & Codes</div>
-        <div class="field-row">
-          <div class="field-group">
-            <label>Family Code</label>
-            <input type="text" id="cfg-family-code" autocomplete="off" />
-          </div>
-          <div class="field-group">
+          <div class="section-title">Passwords & Codes</div>
+          <div class="field-group" style="max-width:50%">
             <label>Parent Code</label>
             <input type="text" id="cfg-parent-code" autocomplete="off" />
           </div>
-        </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label>Soren's Password</label>
-            <input type="text" id="cfg-pass-soren" autocomplete="off" />
+          <div class="field-row">
+            <div class="field-group">
+              <label>Soren's Password</label>
+              <input type="text" id="cfg-pass-soren" autocomplete="off" />
+            </div>
+            <div class="field-group">
+              <label>Reed's Password</label>
+              <input type="text" id="cfg-pass-reed" autocomplete="off" />
+            </div>
           </div>
-          <div class="field-group">
-            <label>Reed's Password</label>
-            <input type="text" id="cfg-pass-reed" autocomplete="off" />
+          <div class="field-group" style="max-width:50%">
+            <label>Adele's Password</label>
+            <input type="text" id="cfg-pass-adele" autocomplete="off" />
           </div>
-        </div>
-        <div class="field-group" style="max-width:50%">
-          <label>Adele's Password</label>
-          <input type="text" id="cfg-pass-adele" autocomplete="off" />
-        </div>
 
-        <button class="btn btn-save" onclick="saveConfig()">💾 Save All Changes</button>
-        <div class="success" id="save-success" style="display:none">✅ Settings saved successfully!</div>
-      </div>
+          <button class="btn btn-save" onclick="saveConfig()">💾 Save All Changes</button>
+          <div class="success" id="save-success" style="display:none">✅ Settings saved successfully!</div>
+        </div>
       </div><!-- /tab-settings -->
-
-      <!-- TAB: OVERRIDE MINUTES -->
-      <div class="tab-panel" id="tab-minutes">
-        <div class="card">
-          <h2>📝 Override Reading Minutes</h2>
-          <p style="color:#888;font-size:0.85rem;margin-bottom:16px">Select a week to view and edit any minute entry. Changes save immediately.</p>
-          <div class="week-select">
-            <label style="font-weight:600;color:#555">Week:</label>
-            <select id="override-week-select" onchange="loadOverrideWeek()">
-              <option value="1">Week 1 — June 8</option>
-              <option value="2">Week 2 — June 15</option>
-              <option value="3">Week 3 — June 22</option>
-              <option value="4">Week 4 — June 29</option>
-              <option value="5">Week 5 — July 6</option>
-              <option value="6">Week 6 — July 13</option>
-              <option value="7">Week 7 — July 20</option>
-              <option value="8">Week 8 — July 27</option>
-              <option value="9">Week 9 — Aug 3</option>
-            </select>
-          </div>
-          <div style="overflow-x:auto">
-            <table class="override-table" id="override-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th class="soren-col">Soren</th>
-                  <th class="reed-col">Reed</th>
-                  <th class="adele-col">Adele</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="override-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div><!-- /tab-minutes -->
 
       <!-- TAB: MANAGE LETTERS -->
       <div class="tab-panel" id="tab-letters">
@@ -270,7 +213,6 @@
       document.getElementById('cfg-money-letter').value = cfg.moneyPerLetter || 2;
       document.getElementById('cfg-money-star').value = cfg.moneyPerStar || 1;
       document.getElementById('cfg-yesday-goal').value = cfg.yesdayGoal || 100;
-      document.getElementById('cfg-family-code').value = cfg.familyCode || '';
       document.getElementById('cfg-parent-code').value = cfg.parentCode || '';
       document.getElementById('cfg-pass-soren').value = cfg.passwords?.soren || '';
       document.getElementById('cfg-pass-reed').value = cfg.passwords?.reed || '';
@@ -278,65 +220,12 @@
     }
 
     // ── TABS ──
-    window.showTab = function(name) {
+    window.showTab = function(name, btn) {
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(`tab-${name}`).classList.add('active');
-      event.target.classList.add('active');
-      if (name === 'minutes') loadOverrideWeek();
+      btn.classList.add('active');
       if (name === 'letters') loadAllLetters();
-    };
-
-    // ── WEEK DATES ──
-    const WEEK_DATES = (() => {
-      const weeks = [], start = new Date('2026-06-08T12:00:00');
-      for (let w = 0; w < 9; w++) {
-        const days = [];
-        for (let d = 0; d < 7; d++) { const dt = new Date(start); dt.setDate(start.getDate() + w*7+d); days.push(dt.toISOString().split('T')[0]); }
-        weeks.push(days);
-      }
-      return weeks;
-    })();
-
-    const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-
-    // ── OVERRIDE MINUTES ──
-    let overrideData = {};
-
-    window.loadOverrideWeek = async function() {
-      const w = parseInt(document.getElementById('override-week-select').value) - 1;
-      const days = WEEK_DATES[w];
-      const tbody = document.getElementById('override-tbody');
-      tbody.innerHTML = '<tr><td colspan="5" style="color:#aaa;text-align:center;padding:12px">Loading...</td></tr>';
-
-      // Load reading data for this week
-      const promises = days.map(d => getDoc(doc(db, 'reading', d)));
-      const snaps = await Promise.all(promises);
-      snaps.forEach((snap, i) => { overrideData[days[i]] = snap.exists() ? snap.data() : {}; });
-
-      tbody.innerHTML = '';
-      days.forEach((dateStr, i) => {
-        const data = overrideData[dateStr] || {};
-        const tr = document.createElement('tr');
-        const d = new Date(dateStr + 'T12:00:00');
-        tr.innerHTML = `
-          <td><strong>${DAY_NAMES[i]}</strong><br><small style="color:#888">${d.getMonth()+1}/${d.getDate()}</small></td>
-          <td class="soren-col"><input class="override-input" type="number" min="0" value="${data.soren||0}" data-date="${dateStr}" data-kid="soren" /></td>
-          <td class="reed-col"><input class="override-input" type="number" min="0" value="${data.reed||0}" data-date="${dateStr}" data-kid="reed" /></td>
-          <td class="adele-col"><input class="override-input" type="number" min="0" value="${data.adele||0}" data-date="${dateStr}" data-kid="adele" /></td>
-          <td><button class="btn-save-row" onclick="saveOverrideRow('${dateStr}')">Save</button><span class="saved-flash" id="flash-${dateStr}" style="display:none">✓ Saved</span></td>`;
-        tbody.appendChild(tr);
-      });
-    };
-
-    window.saveOverrideRow = async function(dateStr) {
-      const sorenVal = parseInt(document.querySelector(`input[data-date="${dateStr}"][data-kid="soren"]`).value) || 0;
-      const reedVal = parseInt(document.querySelector(`input[data-date="${dateStr}"][data-kid="reed"]`).value) || 0;
-      const adeleVal = parseInt(document.querySelector(`input[data-date="${dateStr}"][data-kid="adele"]`).value) || 0;
-      await setDoc(doc(db, 'reading', dateStr), { soren: sorenVal, reed: reedVal, adele: adeleVal });
-      const flash = document.getElementById(`flash-${dateStr}`);
-      flash.style.display = 'inline';
-      setTimeout(() => flash.style.display = 'none', 2000);
     };
 
     // ── ALL LETTERS ──
@@ -353,15 +242,14 @@
       const container = document.getElementById('all-letters-list');
       container.innerHTML = '';
       if (allLetters.length === 0) { container.innerHTML = '<p style="color:#aaa">No letters recorded yet.</p>'; return; }
-      [...allLetters].sort((a,b) => b.date.localeCompare(a.date)).forEach(l => {
+      [...allLetters].sort((a, b) => b.date.localeCompare(a.date)).forEach(l => {
         const div = document.createElement('div');
         div.className = 'letter-admin-row';
-        const kidClass = `kid-${l.from}`;
         const kidLabel = l.from.charAt(0).toUpperCase() + l.from.slice(1);
         div.innerHTML = `
           <div class="letter-admin-info">
             <strong>To: ${l.to}</strong>
-            <span class="letter-kid-tag ${kidClass}">${kidLabel}</span>
+            <span class="letter-kid-tag kid-${l.from}">${kidLabel}</span>
             <br><span style="color:#888;font-size:0.8rem">${l.date}</span>
           </div>
           <button class="btn-del" onclick="deleteLetter('${l.id}')">🗑 Delete</button>`;
@@ -378,7 +266,7 @@
 
     window.saveConfig = async function() {
       const newCfg = {
-        familyCode: document.getElementById('cfg-family-code').value.trim(),
+        familyCode: cfg.familyCode || '',
         parentCode: document.getElementById('cfg-parent-code').value.trim(),
         passwords: {
           soren: document.getElementById('cfg-pass-soren').value.trim(),
