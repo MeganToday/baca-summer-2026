@@ -503,12 +503,6 @@
       <div class="together-grid" id="together-grid"></div>
     </div>
 
-    <!-- DEBUG -->
-    <div id="debug-box" style="background:#fffbe6;border:2px solid #f39c12;border-radius:8px;padding:12px;margin-bottom:16px;font-size:0.8rem;font-family:monospace;display:none">
-      <strong>Debug log:</strong>
-      <div id="debug-log"></div>
-    </div>
-
     <!-- (3) CURRENTLY READING -->
     <div class="card">
       <div class="card-header"><span class="card-icon">📖</span><h2>Currently Reading</h2></div>
@@ -833,34 +827,21 @@
     document.querySelectorAll('.autocomplete-dropdown').forEach(ac => { ac.style.display = 'none'; });
   });
 
-  function dbg(msg) {
-    const box = document.getElementById('debug-box');
-    const log = document.getElementById('debug-log');
-    if (box && log) { box.style.display = 'block'; log.innerHTML += '<div>' + msg + '</div>'; }
-  }
-
   function wireBookInputs() {
-    dbg('wireBookInputs() called');
     [['current','current-ac'], ['finished','finished-ac'], ['want','want-ac']].forEach(([list, acId]) => {
       const input = document.getElementById(`${list}-input`);
       const btn = document.getElementById(`btn-add-${list}`);
-      dbg(`${list}: input=${!!input} btn=${!!btn}`);
       if (!input || !btn) return;
       let debounce;
       input.addEventListener('input', async () => {
         const q = input.value.trim();
         const ac = document.getElementById(acId);
-        dbg(`input event: q="${q}"`);
         if (q.length < 2) { ac.style.display = 'none'; return; }
         clearTimeout(debounce);
         debounce = setTimeout(async () => {
           try {
-            const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&key=${BOOKS_API_KEY}`;
-            dbg(`fetching: ${url.substring(0,80)}...`);
-            const res = await fetch(url);
-            dbg(`response status: ${res.status}`);
+            const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&key=${BOOKS_API_KEY}`);
             const data = await res.json();
-            dbg(`items: ${data.items?.length ?? 0}, error: ${data.error?.message ?? 'none'}`);
             ac.innerHTML = '';
             if (!data.items || data.items.length === 0) { ac.style.display = 'none'; return; }
             data.items.forEach(item => {
@@ -880,8 +861,7 @@
               ac.appendChild(div);
             });
             ac.style.display = 'block';
-            dbg(`dropdown shown with ${ac.children.length} items`);
-          } catch (e) { dbg(`ERROR: ${e.message}`); ac.style.display = 'none'; }
+          } catch (e) { ac.style.display = 'none'; }
         }, 300);
       });
       input.addEventListener('keydown', e => { if (e.key === 'Enter') addBookFromInput(list); });
