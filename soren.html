@@ -226,38 +226,13 @@
     .invest-note { font-size: 0.75rem; color: #546e7a; margin-top: 6px; }
 
     /* ── READING TOGETHER ── */
-    .together-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px;
-    }
-    .together-tile {
-      background: #0d1b2a;
-      border: 1px solid #1e3a6e;
-      border-radius: 12px;
-      padding: 14px 12px;
-      text-align: center;
-    }
-    .together-pair {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .together-pair img {
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #1565c0;
-    }
-    .together-arrow {
-      font-size: 1.4rem;
-      color: #64b5f6;
-      line-height: 1;
-    }
-    .together-tile .stars-count { font-size: 1.5rem; font-weight: 900; color: #ffd54f; }
-    .together-tile .mins-label { font-size: 0.8rem; color: #7896b8; margin-top: 2px; }
+    .together-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+    .together-tile { background: #1a2744; border-radius: 14px; padding: 14px 12px; text-align: center; border: 2px solid #1e3a6e; }
+    .together-pair { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
+    .together-pair img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 3px solid #1565c0; }
+    .together-arrow { font-size: 1.4rem; color: #64b5f6; line-height: 1; }
+    .stars-big { font-size: 1.6rem; font-weight: 900; color: #ffd54f; }
+    .mins-lbl { font-size: 0.78rem; color: #7896b8; margin-top: 2px; }
 
     /* ── BOOKS ── */
     .book-add-row {
@@ -791,8 +766,8 @@
           <span class="together-arrow">→</span>
           <img src="Adele.jpg" />
         </div>
-        <div class="stars-count">${sorenToAdele} ⭐</div>
-        <div class="mins-label">${sorenToAdele * (sm.sorenToAdele || 10)} min · Soren read to Adele</div>
+        <div class="stars-big">${sorenToAdele} ⭐</div>
+        <div class="mins-lbl">${sorenToAdele * (sm.sorenToAdele || 10)} min · Soren read to Adele</div>
       </div>
       <div class="together-tile">
         <div class="together-pair">
@@ -800,8 +775,8 @@
           <span class="together-arrow">→</span>
           <img src="Soren.jpg" />
         </div>
-        <div class="stars-count">${adeleToSoren} ⭐</div>
-        <div class="mins-label">${adeleToSoren * (sm.adeleToSoren || 5)} min · Adele read to Soren</div>
+        <div class="stars-big">${adeleToSoren} ⭐</div>
+        <div class="mins-lbl">${adeleToSoren * (sm.adeleToSoren || 5)} min · Adele read to Soren</div>
       </div>`;
   }
 
