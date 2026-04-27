@@ -151,21 +151,19 @@
     .needed-green { color: #27ae60; }
 
     /* Stars */
-    .stars-cell { min-width: 90px; }
+    .stars-cell { min-width: 110px; }
     .star-group {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 5px;
       align-items: flex-start;
-      padding: 4px;
+      padding: 4px 2px;
     }
     .star-item {
       display: flex;
       align-items: center;
       gap: 4px;
       cursor: pointer;
-      font-size: 0.72rem;
-      color: #666;
       user-select: none;
       white-space: nowrap;
     }
@@ -177,6 +175,28 @@
     .star-icon.filled { color: #f39c12; }
     .star-icon.empty { color: #ccc; }
     .star-item:hover .star-icon { transform: scale(1.3); }
+    .star-pair {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .star-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid #ddd;
+    }
+    .star-arrow {
+      font-size: 0.7rem;
+      color: #999;
+      line-height: 1;
+    }
+    .star-mins {
+      font-size: 0.65rem;
+      color: #aaa;
+      margin-left: 1px;
+    }
     @keyframes starTwinkle {
       0% { transform: scale(1); }
       25% { transform: scale(1.5) rotate(20deg); }
@@ -679,10 +699,10 @@
 
     let weekStarsTotal = 0;
     const STAR_TYPES = [
-      { key: 'adeleToReed', label: 'A→R 5' },
-      { key: 'adeleToSoren', label: 'A→S 5' },
-      { key: 'reedToAdele', label: 'R→A 10' },
-      { key: 'sorenToAdele', label: 'S→A 10' },
+      { key: 'adeleToReed',  from: 'Adele.jpg',  to: 'Reed.jpg',  mins: 5  },
+      { key: 'adeleToSoren', from: 'Adele.jpg',  to: 'Soren.jpg', mins: 5  },
+      { key: 'reedToAdele',  from: 'Reed.jpg',   to: 'Adele.jpg', mins: 10 },
+      { key: 'sorenToAdele', from: 'Soren.jpg',  to: 'Adele.jpg', mins: 10 },
     ];
 
     days.forEach(dateStr => {
@@ -704,11 +724,16 @@
         icon.className = `star-icon ${isOn ? 'filled' : 'empty'}`;
         icon.textContent = isOn ? '★' : '☆';
 
-        const lbl = document.createElement('span');
-        lbl.textContent = st.label;
+        const pair = document.createElement('span');
+        pair.className = 'star-pair';
+        pair.innerHTML = `
+          <img src="${st.from}" class="star-avatar" />
+          <span class="star-arrow">→</span>
+          <img src="${st.to}" class="star-avatar" />
+          <span class="star-mins">${st.mins}m</span>`;
 
         item.appendChild(icon);
-        item.appendChild(lbl);
+        item.appendChild(pair);
         item.addEventListener('click', handleStarClick);
         group.appendChild(item);
       });
