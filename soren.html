@@ -228,9 +228,9 @@
     /* ── READING TOGETHER ── */
     .together-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
     .together-tile { background: #1a2744; border-radius: 14px; padding: 14px 12px; text-align: center; border: 2px solid #1e3a6e; }
-    .together-pair { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
-    .together-pair img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 3px solid #1565c0; }
-    .together-arrow { font-size: 1.4rem; color: #64b5f6; line-height: 1; }
+    .together-pair { display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; gap: 8px; margin-bottom: 10px; }
+    .together-pair img { display: inline-block !important; width: 52px !important; height: 52px !important; border-radius: 50% !important; object-fit: cover !important; border: 3px solid #1565c0 !important; }
+    .together-arrow { display: inline-block !important; font-size: 1.4rem; color: #64b5f6; line-height: 1; }
     .stars-big { font-size: 1.6rem; font-weight: 900; color: #ffd54f; }
     .mins-lbl { font-size: 0.78rem; color: #7896b8; margin-top: 2px; }
 
