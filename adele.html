@@ -244,9 +244,9 @@
     <div class="card">
       <div class="card-header"><span class="card-icon">📖</span><h2>I'm Reading Right Now!</h2></div>
       <div class="book-add-row">
-        <input type="text" id="current-input" placeholder="Search for a book..." autocomplete="off" oninput="bookSearch(this,'current-ac')" onkeydown="if(event.key==='Enter')addBook('current')" />
+        <input type="text" id="current-input" placeholder="Search for a book..." autocomplete="off" />
         <div class="autocomplete-dropdown" id="current-ac" style="display:none"></div>
-        <button class="btn-add-book" onclick="addBook('current')">+ Add 📚</button>
+        <button class="btn-add-book" id="btn-add-current">+ Add 📚</button>
       </div>
       <div class="bookshelf" id="current-books"><p class="books-empty">No books yet — add one!</p></div>
     </div>
@@ -257,9 +257,9 @@
         <span class="finished-badge" id="finished-badge">0 books</span>
       </div>
       <div class="book-add-row">
-        <input type="text" id="finished-input" placeholder="Add a finished book..." autocomplete="off" oninput="bookSearch(this,'finished-ac')" onkeydown="if(event.key==='Enter')addBook('finished')" />
+        <input type="text" id="finished-input" placeholder="Add a finished book..." autocomplete="off" />
         <div class="autocomplete-dropdown" id="finished-ac" style="display:none"></div>
-        <button class="btn-add-book" onclick="addBook('finished')">+ Add ⭐</button>
+        <button class="btn-add-book" id="btn-add-finished">+ Add ⭐</button>
       </div>
       <div class="bookshelf" id="finished-books"><p class="books-empty">Keep reading — you can do it! 🌈</p></div>
     </div>
@@ -267,9 +267,9 @@
     <div class="card">
       <div class="card-header"><span class="card-icon">🔖</span><h2>Books I Want to Read!</h2></div>
       <div class="book-add-row">
-        <input type="text" id="want-input" placeholder="What book looks fun?" autocomplete="off" oninput="bookSearch(this,'want-ac')" onkeydown="if(event.key==='Enter')addBook('want')" />
+        <input type="text" id="want-input" placeholder="What book looks fun?" autocomplete="off" />
         <div class="autocomplete-dropdown" id="want-ac" style="display:none"></div>
-        <button class="btn-add-book" onclick="addBook('want')">+ Add 💖</button>
+        <button class="btn-add-book" id="btn-add-want">+ Add 💖</button>
       </div>
       <div class="bookshelf" id="want-books"><p class="books-empty">What book looks fun?</p></div>
     </div>
@@ -438,31 +438,46 @@
 
   async function saveBooks() { await setDoc(doc(db,'books',KID),booksData); }
 
-  let acDebounce={};
-  window.bookSearch=async function(input,acId){
-    const q=input.value.trim(), ac=document.getElementById(acId);
-    if(q.length<2){ ac.style.display='none'; return; }
-    clearTimeout(acDebounce[acId]);
-    acDebounce[acId]=setTimeout(async()=>{
-      try{
-        const res=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&key=${BOOKS_API_KEY}`);
-        const data=await res.json(); ac.innerHTML='';
-        if(!data.items){ ac.style.display='none'; return; }
-        data.items.forEach(item=>{
-          const info=item.volumeInfo, thumb=info.imageLinks?.thumbnail?.replace('http://','https://')||'';
-          const div=document.createElement('div'); div.className='ac-item';
-          div.innerHTML=thumb?`<img src="${thumb}" class="ac-thumb"/><span>${info.title}</span>`:`<div class="ac-ph">📚</div><span>${info.title}</span>`;
-          div.addEventListener('mousedown',e=>{ e.preventDefault(); input.value=info.title; input.dataset.thumb=thumb; ac.style.display='none'; });
-          ac.appendChild(div);
-        });
-        ac.style.display='block';
-      } catch(e){ ac.style.display='none'; }
-    },300);
-  };
-
   document.addEventListener('click',()=>{ document.querySelectorAll('.autocomplete-dropdown').forEach(a=>a.style.display='none'); });
 
-  window.addBook=async function(list){ const input=document.getElementById(`${list}-input`), title=input.value.trim(); if(!title)return; booksData[list]=booksData[list]||[]; booksData[list].push({title,thumb:input.dataset.thumb||'',addedAt:new Date().toISOString()}); input.value=''; input.dataset.thumb=''; document.getElementById(`${list}-ac`).style.display='none'; await saveBooks(); renderBooks(list); };
+  [['current','current-ac'],['finished','finished-ac'],['want','want-ac']].forEach(([list,acId])=>{
+    const input=document.getElementById(`${list}-input`);
+    const btn=document.getElementById(`btn-add-${list}`);
+    let debounce;
+    input.addEventListener('input',async()=>{
+      const q=input.value.trim(), ac=document.getElementById(acId);
+      if(q.length<2){ ac.style.display='none'; return; }
+      clearTimeout(debounce);
+      debounce=setTimeout(async()=>{
+        try{
+          const res=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&key=${BOOKS_API_KEY}`);
+          const data=await res.json(); ac.innerHTML='';
+          if(!data.items){ ac.style.display='none'; return; }
+          data.items.forEach(item=>{
+            const info=item.volumeInfo, thumb=info.imageLinks?.thumbnail?.replace('http://','https://')||'';
+            const div=document.createElement('div'); div.className='ac-item';
+            div.innerHTML=thumb?`<img src="${thumb}" class="ac-thumb"/><span>${info.title}</span>`:`<div class="ac-ph">📚</div><span>${info.title}</span>`;
+            div.addEventListener('mousedown',e=>{ e.preventDefault(); input.value=info.title; input.dataset.thumb=thumb; ac.style.display='none'; });
+            ac.appendChild(div);
+          });
+          ac.style.display='block';
+        } catch(e){ ac.style.display='none'; }
+      },300);
+    });
+    input.addEventListener('keydown',e=>{ if(e.key==='Enter') addBookFromInput(list); });
+    btn.addEventListener('click',()=>addBookFromInput(list));
+  });
+
+  async function addBookFromInput(list){
+    const input=document.getElementById(`${list}-input`), title=input.value.trim();
+    if(!title) return;
+    booksData[list]=booksData[list]||[];
+    booksData[list].push({title,thumb:input.dataset.thumb||'',addedAt:new Date().toISOString()});
+    input.value=''; input.dataset.thumb='';
+    document.getElementById(`${list}-ac`).style.display='none';
+    await saveBooks(); renderBooks(list);
+  }
+
   window.removeBook=async function(list,idx){ booksData[list].splice(idx,1); await saveBooks(); renderBooks(list); };
   window.finishBook=async function(idx){ const book=booksData.current.splice(idx,1)[0]; booksData.finished=booksData.finished||[]; booksData.finished.push({...book,finishedAt:new Date().toISOString()}); await saveBooks(); renderBooks('current'); renderBooks('finished'); };
 

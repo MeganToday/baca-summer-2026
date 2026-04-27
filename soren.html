@@ -507,9 +507,9 @@
     <div class="card">
       <div class="card-header"><span class="card-icon">📖</span><h2>Currently Reading</h2></div>
       <div class="book-add-row">
-        <input type="text" id="current-input" placeholder="Search for a book title..." autocomplete="off" oninput="bookSearch(this, 'current-ac')" onkeydown="if(event.key==='Enter')addBook('current')" />
+        <input type="text" id="current-input" placeholder="Search for a book title..." autocomplete="off" />
         <div class="autocomplete-dropdown" id="current-ac" style="display:none"></div>
-        <button class="btn-add-book" onclick="addBook('current')">+ Add</button>
+        <button class="btn-add-book" id="btn-add-current">+ Add</button>
       </div>
       <div class="bookshelf" id="current-books"><p class="books-empty">No books yet — add one above!</p></div>
     </div>
@@ -522,9 +522,9 @@
         <span class="finished-count-badge" id="finished-badge">0 books</span>
       </div>
       <div class="book-add-row">
-        <input type="text" id="finished-input" placeholder="Add a finished book..." autocomplete="off" oninput="bookSearch(this, 'finished-ac')" onkeydown="if(event.key==='Enter')addBook('finished')" />
+        <input type="text" id="finished-input" placeholder="Add a finished book..." autocomplete="off" />
         <div class="autocomplete-dropdown" id="finished-ac" style="display:none"></div>
-        <button class="btn-add-book" onclick="addBook('finished')">+ Add</button>
+        <button class="btn-add-book" id="btn-add-finished">+ Add</button>
       </div>
       <div class="bookshelf" id="finished-books"><p class="books-empty">No finished books yet — keep reading!</p></div>
     </div>
@@ -533,9 +533,9 @@
     <div class="card">
       <div class="card-header"><span class="card-icon">🔖</span><h2>Want to Read</h2></div>
       <div class="book-add-row">
-        <input type="text" id="want-input" placeholder="Add a book to your wish list..." autocomplete="off" oninput="bookSearch(this, 'want-ac')" onkeydown="if(event.key==='Enter')addBook('want')" />
+        <input type="text" id="want-input" placeholder="Add a book to your wish list..." autocomplete="off" />
         <div class="autocomplete-dropdown" id="want-ac" style="display:none"></div>
-        <button class="btn-add-book" onclick="addBook('want')">+ Add</button>
+        <button class="btn-add-book" id="btn-add-want">+ Add</button>
       </div>
       <div class="bookshelf" id="want-books"><p class="books-empty">Nothing on the list yet!</p></div>
     </div>
@@ -825,6 +825,60 @@
   document.addEventListener('click', () => {
     document.querySelectorAll('.autocomplete-dropdown').forEach(ac => { ac.style.display = 'none'; });
   });
+
+  // Wire up book inputs via addEventListener (module scope — inline oninput won't reach here)
+  [['current','current-ac'], ['finished','finished-ac'], ['want','want-ac']].forEach(([list, acId]) => {
+    const input = document.getElementById(`${list}-input`);
+    const btn = document.getElementById(`btn-add-${list}`);
+    let debounce;
+    input.addEventListener('input', async () => {
+      const q = input.value.trim();
+      const ac = document.getElementById(acId);
+      if (q.length < 2) { ac.style.display = 'none'; return; }
+      clearTimeout(debounce);
+      debounce = setTimeout(async () => {
+        try {
+          const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&key=${BOOKS_API_KEY}`);
+          const data = await res.json();
+          ac.innerHTML = '';
+          if (!data.items || data.items.length === 0) { ac.style.display = 'none'; return; }
+          data.items.forEach(item => {
+            const info = item.volumeInfo;
+            const thumb = info.imageLinks?.thumbnail?.replace('http://', 'https://') || '';
+            const div = document.createElement('div');
+            div.className = 'ac-item';
+            div.innerHTML = thumb
+              ? `<img src="${thumb}" class="ac-thumb" /><span>${info.title}${info.authors ? ' <em style="color:#546e7a">— ' + info.authors[0] + '</em>' : ''}</span>`
+              : `<div class="ac-thumb-placeholder">📚</div><span>${info.title}</span>`;
+            div.addEventListener('mousedown', e => {
+              e.preventDefault();
+              input.value = info.title;
+              input.dataset.thumb = thumb;
+              ac.style.display = 'none';
+            });
+            ac.appendChild(div);
+          });
+          ac.style.display = 'block';
+        } catch (e) { ac.style.display = 'none'; }
+      }, 300);
+    });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') addBookFromInput(list); });
+    btn.addEventListener('click', () => addBookFromInput(list));
+  });
+
+  async function addBookFromInput(list) {
+    const input = document.getElementById(`${list}-input`);
+    const title = input.value.trim();
+    if (!title) return;
+    const thumb = input.dataset.thumb || '';
+    booksData[list] = booksData[list] || [];
+    booksData[list].push({ title, thumb, addedAt: new Date().toISOString() });
+    input.value = '';
+    input.dataset.thumb = '';
+    document.getElementById(`${list}-ac`).style.display = 'none';
+    await saveBooks();
+    renderBooks(list);
+  }
 
   window.addBook = async function (list) {
     const input = document.getElementById(`${list}-input`);
