@@ -368,7 +368,7 @@
       document.getElementById('dashboard').style.display = 'block';
       document.getElementById('header-stats').style.display = 'flex';
       checkBdayBanner();
-      await loadAll(); renderAll(); listenUpdates();
+      await loadAll(); renderAll(); wireBookInputs(); listenUpdates();
     } else { document.getElementById('pass-error').textContent = 'Wrong password — try again!'; }
   };
   document.getElementById('pass-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.checkPassword(); });
@@ -465,33 +465,36 @@
 
   document.addEventListener('click',()=>{ document.querySelectorAll('.autocomplete-dropdown').forEach(a=>a.style.display='none'); });
 
-  [['current','current-ac'],['finished','finished-ac'],['want','want-ac']].forEach(([list,acId])=>{
-    const input=document.getElementById(`${list}-input`);
-    const btn=document.getElementById(`btn-add-${list}`);
-    let debounce;
-    input.addEventListener('input', async ()=>{
-      const q=input.value.trim(), ac=document.getElementById(acId);
-      if(q.length<2){ ac.style.display='none'; return; }
-      clearTimeout(debounce);
-      debounce=setTimeout(async()=>{
-        try{
-          const res=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&key=${BOOKS_API_KEY}`);
-          const data=await res.json(); ac.innerHTML='';
-          if(!data.items){ ac.style.display='none'; return; }
-          data.items.forEach(item=>{
-            const info=item.volumeInfo, thumb=info.imageLinks?.thumbnail?.replace('http://','https://')||'';
-            const div=document.createElement('div'); div.className='ac-item';
-            div.innerHTML=thumb?`<img src="${thumb}" class="ac-thumb"/><span>${info.title}</span>`:`<div class="ac-ph">📚</div><span>${info.title}</span>`;
-            div.addEventListener('mousedown',e=>{ e.preventDefault(); input.value=info.title; input.dataset.thumb=thumb; ac.style.display='none'; });
-            ac.appendChild(div);
-          });
-          ac.style.display='block';
-        } catch(e){ ac.style.display='none'; }
-      },300);
+  function wireBookInputs() {
+    [['current','current-ac'],['finished','finished-ac'],['want','want-ac']].forEach(([list,acId])=>{
+      const input=document.getElementById(`${list}-input`);
+      const btn=document.getElementById(`btn-add-${list}`);
+      if(!input||!btn) return;
+      let debounce;
+      input.addEventListener('input', async ()=>{
+        const q=input.value.trim(), ac=document.getElementById(acId);
+        if(q.length<2){ ac.style.display='none'; return; }
+        clearTimeout(debounce);
+        debounce=setTimeout(async()=>{
+          try{
+            const res=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=6&key=${BOOKS_API_KEY}`);
+            const data=await res.json(); ac.innerHTML='';
+            if(!data.items){ ac.style.display='none'; return; }
+            data.items.forEach(item=>{
+              const info=item.volumeInfo, thumb=info.imageLinks?.thumbnail?.replace('http://','https://')||'';
+              const div=document.createElement('div'); div.className='ac-item';
+              div.innerHTML=thumb?`<img src="${thumb}" class="ac-thumb"/><span>${info.title}</span>`:`<div class="ac-ph">📚</div><span>${info.title}</span>`;
+              div.addEventListener('mousedown',e=>{ e.preventDefault(); input.value=info.title; input.dataset.thumb=thumb; ac.style.display='none'; });
+              ac.appendChild(div);
+            });
+            ac.style.display='block';
+          } catch(e){ ac.style.display='none'; }
+        },300);
+      });
+      input.addEventListener('keydown',e=>{ if(e.key==='Enter') addBookFromInput(list); });
+      btn.addEventListener('click',()=>addBookFromInput(list));
     });
-    input.addEventListener('keydown',e=>{ if(e.key==='Enter') addBookFromInput(list); });
-    btn.addEventListener('click',()=>addBookFromInput(list));
-  });
+  }
 
   async function addBookFromInput(list){
     const input=document.getElementById(`${list}-input`), title=input.value.trim();
