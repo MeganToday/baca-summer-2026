@@ -14,60 +14,8 @@
       color: #333;
     }
 
-    /* ── LOGIN SCREEN ── */
-    #login-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      gap: 20px;
-    }
-    #login-screen h1 {
-      font-size: 2.8rem;
-      color: #fff;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-      text-align: center;
-    }
-    .login-box {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-      text-align: center;
-      width: 340px;
-    }
-    .login-box h2 { margin-bottom: 8px; color: #555; font-size: 1.1rem; }
-    .login-box p { color: #888; font-size: 0.9rem; margin-bottom: 20px; }
-    .login-box input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      text-align: center;
-      letter-spacing: 3px;
-      margin-bottom: 12px;
-    }
-    .login-box input:focus { outline: none; border-color: #667eea; }
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      padding: 12px 32px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
-    .btn-primary:active { transform: translateY(0); }
-    #login-error { color: #e74c3c; font-size: 0.9rem; margin-top: 8px; }
-
     /* ── MAIN APP ── */
-    #app { display: none; }
+    #app { display: block; }
 
     .app-header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -400,18 +348,6 @@
 
 <canvas id="fireworks-canvas"></canvas>
 
-<!-- LOGIN -->
-<div id="login-screen">
-  <h1>📚 Baca Summer Challenge 2026 🌟</h1>
-  <div class="login-box">
-    <h2>Welcome, Baca Family!</h2>
-    <p>Enter the family code to begin</p>
-    <input type="password" id="family-code-input" placeholder="••••••••" autocomplete="off" />
-    <button class="btn-primary" onclick="checkFamilyCode()">Let's Go! 🚀</button>
-    <div id="login-error"></div>
-  </div>
-</div>
-
 <!-- MAIN APP -->
 <div id="app">
   <div id="birthday-banner">🎂 HAPPY BIRTHDAY REED! 🎉 Wishing you the most amazing day! 🎈🎁🎂</div>
@@ -530,9 +466,9 @@
   // ── CONFIG ──
   let cfg = {};
   let currentWeek = 1;
-  let readingData = {}; // { "2026-06-08": { soren: 30, reed: 0, adele: 10 } }
-  let starsData = {};   // { "2026-06-08": { adeleToReed: true, adeleToSoren: false, reedToAdele: true, sorenToAdele: false } }
-  let lettersData = []; // [{ id, from, to, date }]
+  let readingData = {};
+  let starsData = {};
+  let lettersData = [];
   let confettiActive = false;
 
   const KIDS = ['soren', 'reed', 'adele'];
@@ -566,30 +502,7 @@
     return 9;
   }
 
-  // ── LOAD CONFIG ──
-  async function loadConfig() {
-    const snap = await getDoc(doc(db, 'config', 'numbers'));
-    if (snap.exists()) cfg = snap.data();
-  }
-
-  // ── LOGIN ──
-  window.checkFamilyCode = async function() {
-    await loadConfig();
-    const input = document.getElementById('family-code-input').value.trim().toLowerCase();
-    if (input === cfg.familyCode) {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      initApp();
-    } else {
-      document.getElementById('login-error').textContent = 'Hmm, that\'s not right. Try again!';
-    }
-  };
-
-  document.getElementById('family-code-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') window.checkFamilyCode();
-  });
-
-  // ── INIT ──
+  // ── INIT (runs immediately on page load) ──
   async function initApp() {
     checkBirthdayBanner();
     currentWeek = getCurrentWeek();
@@ -613,8 +526,11 @@
     dateInput.value = today;
   }
 
-  // ── LOAD ALL READING/STARS/LETTERS DATA ──
+  // ── LOAD ALL DATA ──
   async function loadAllData() {
+    const cfgSnap = await getDoc(doc(db, 'config', 'numbers'));
+    if (cfgSnap.exists()) cfg = cfgSnap.data();
+
     const readSnap = await getDocs(collection(db, 'reading'));
     readSnap.forEach(d => { readingData[d.id] = d.data(); });
 
@@ -1144,6 +1060,9 @@
       if (count > 40) { clearInterval(interval); confettiActive = false; }
     }, 150);
   }
+
+  // Start immediately — no login gate
+  initApp();
 
 </script>
 </body>
