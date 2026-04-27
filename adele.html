@@ -124,10 +124,11 @@
     .invest-note { font-size: 0.72rem; color: #b39dab; margin-top: 6px; }
 
     /* ── READING TOGETHER ── */
-    .together-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
-    .together-tile { background: #fff0f5; border-radius: 18px; padding: 16px; text-align: center; border: 2px solid #f48fb1; }
-    .sibling-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid #e91e8c; margin-bottom: 8px; }
-    .sibling-ph { width: 60px; height: 60px; border-radius: 50%; background: #e91e8c; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 8px; }
+    .together-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+    .together-tile { background: #fff0f5; border-radius: 18px; padding: 14px 12px; text-align: center; border: 2px solid #f48fb1; }
+    .together-pair { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
+    .together-pair img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 3px solid #e91e8c; }
+    .together-arrow { font-size: 1.4rem; color: #e91e8c; line-height: 1; }
     .stars-big { font-size: 1.8rem; font-weight: 900; color: #f57f17; }
     .mins-lbl { font-size: 0.8rem; color: #ad5472; font-weight: 600; }
     .dir-lbl { font-size: 0.72rem; color: #b39dab; margin-top: 3px; }
@@ -389,33 +390,50 @@
   };
 
   function renderTogether() {
-    const sm=cfg.starMinutes||{sorenToAdele:10,reedToAdele:10,adeleToReed:5,adeleToSoren:5};
-    let sorenToAdele=0, reedToAdele=0, adeleToReed=0, adeleToSoren=0;
-    Object.values(starsData).forEach(d=>{ if(d.sorenToAdele) sorenToAdele++; if(d.reedToAdele) reedToAdele++; if(d.adeleToReed) adeleToReed++; if(d.adeleToSoren) adeleToSoren++; });
-    document.getElementById('together-grid').innerHTML=`
+    const sm = cfg.starMinutes || { sorenToAdele: 10, reedToAdele: 10, adeleToReed: 5, adeleToSoren: 5 };
+    let sorenToAdele = 0, reedToAdele = 0, adeleToReed = 0, adeleToSoren = 0;
+    Object.values(starsData).forEach(d => {
+      if (d.sorenToAdele) sorenToAdele++;
+      if (d.reedToAdele) reedToAdele++;
+      if (d.adeleToReed) adeleToReed++;
+      if (d.adeleToSoren) adeleToSoren++;
+    });
+    document.getElementById('together-grid').innerHTML = `
       <div class="together-tile">
-        <img src="Soren.jpg" class="sibling-img" onerror="this.outerHTML='<div class=\\'sibling-ph\\'>🔵</div>'" />
+        <div class="together-pair">
+          <img src="Soren.jpg" />
+          <span class="together-arrow">→</span>
+          <img src="Adele.jpg" />
+        </div>
         <div class="stars-big">${sorenToAdele} ⭐</div>
-        <div class="mins-lbl">${sorenToAdele*(sm.sorenToAdele||10)} minutes</div>
-        <div class="dir-lbl">Soren read to Adele</div>
+        <div class="mins-lbl">${sorenToAdele * (sm.sorenToAdele || 10)} min · Soren read to Adele</div>
       </div>
       <div class="together-tile">
-        <img src="Reed.jpg" class="sibling-img" onerror="this.outerHTML='<div class=\\'sibling-ph\\'>🌊</div>'" />
+        <div class="together-pair">
+          <img src="Reed.jpg" />
+          <span class="together-arrow">→</span>
+          <img src="Adele.jpg" />
+        </div>
         <div class="stars-big">${reedToAdele} ⭐</div>
-        <div class="mins-lbl">${reedToAdele*(sm.reedToAdele||10)} minutes</div>
-        <div class="dir-lbl">Reed read to Adele</div>
+        <div class="mins-lbl">${reedToAdele * (sm.reedToAdele || 10)} min · Reed read to Adele</div>
       </div>
       <div class="together-tile">
-        <img src="Reed.jpg" class="sibling-img" onerror="this.outerHTML='<div class=\\'sibling-ph\\'>🌊</div>'" />
+        <div class="together-pair">
+          <img src="Adele.jpg" />
+          <span class="together-arrow">→</span>
+          <img src="Reed.jpg" />
+        </div>
         <div class="stars-big">${adeleToReed} ⭐</div>
-        <div class="mins-lbl">${adeleToReed*(sm.adeleToReed||5)} minutes</div>
-        <div class="dir-lbl">Adele read to Reed</div>
+        <div class="mins-lbl">${adeleToReed * (sm.adeleToReed || 5)} min · Adele read to Reed</div>
       </div>
       <div class="together-tile">
-        <img src="Soren.jpg" class="sibling-img" onerror="this.outerHTML='<div class=\\'sibling-ph\\'>🔵</div>'" />
+        <div class="together-pair">
+          <img src="Adele.jpg" />
+          <span class="together-arrow">→</span>
+          <img src="Soren.jpg" />
+        </div>
         <div class="stars-big">${adeleToSoren} ⭐</div>
-        <div class="mins-lbl">${adeleToSoren*(sm.adeleToSoren||5)} minutes</div>
-        <div class="dir-lbl">Adele read to Soren</div>
+        <div class="mins-lbl">${adeleToSoren * (sm.adeleToSoren || 5)} min · Adele read to Soren</div>
       </div>`;
   }
 

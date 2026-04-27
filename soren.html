@@ -228,36 +228,36 @@
     /* ── READING TOGETHER ── */
     .together-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 14px;
     }
     .together-tile {
       background: #0d1b2a;
       border: 1px solid #1e3a6e;
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px 12px;
       text-align: center;
     }
-    .together-tile .sibling-img {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #1565c0;
-      margin-bottom: 8px;
-    }
-    .together-tile .sibling-placeholder {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: #1565c0;
+    .together-pair {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      margin: 0 auto 8px;
+      gap: 8px;
+      margin-bottom: 10px;
     }
-    .together-tile .stars-count { font-size: 1.6rem; font-weight: 900; color: #ffd54f; }
-    .together-tile .mins-label { font-size: 0.8rem; color: #7896b8; }
-    .together-tile .direction { font-size: 0.75rem; color: #546e7a; margin-top: 2px; }
+    .together-pair img {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #1565c0;
+    }
+    .together-arrow {
+      font-size: 1.4rem;
+      color: #64b5f6;
+      line-height: 1;
+    }
+    .together-tile .stars-count { font-size: 1.5rem; font-weight: 900; color: #ffd54f; }
+    .together-tile .mins-label { font-size: 0.8rem; color: #7896b8; margin-top: 2px; }
 
     /* ── BOOKS ── */
     .book-add-row {
@@ -776,17 +776,32 @@
 
   // ── READING TOGETHER ──
   function renderTogether() {
-    const sm = cfg.starMinutes || { sorenToAdele: 10, reedToAdele: 10, adeleToReed: 5, adeleToSoren: 5 };
-    let sorenToAdele = 0;
-    Object.values(starsData).forEach(day => { if (day.sorenToAdele) sorenToAdele++; });
+    const sm = cfg.starMinutes || { sorenToAdele: 10, adeleToSoren: 5 };
+    let sorenToAdele = 0, adeleToSoren = 0;
+    Object.values(starsData).forEach(day => {
+      if (day.sorenToAdele) sorenToAdele++;
+      if (day.adeleToSoren) adeleToSoren++;
+    });
 
     const grid = document.getElementById('together-grid');
     grid.innerHTML = `
       <div class="together-tile">
-        <img src="Adele.jpg" class="sibling-img" onerror="this.style.display='none'" />
+        <div class="together-pair">
+          <img src="Soren.jpg" />
+          <span class="together-arrow">→</span>
+          <img src="Adele.jpg" />
+        </div>
         <div class="stars-count">${sorenToAdele} ⭐</div>
-        <div class="mins-label">${sorenToAdele * sm.sorenToAdele} minutes</div>
-        <div class="direction">Soren read to Adele</div>
+        <div class="mins-label">${sorenToAdele * (sm.sorenToAdele || 10)} min · Soren read to Adele</div>
+      </div>
+      <div class="together-tile">
+        <div class="together-pair">
+          <img src="Adele.jpg" />
+          <span class="together-arrow">→</span>
+          <img src="Soren.jpg" />
+        </div>
+        <div class="stars-count">${adeleToSoren} ⭐</div>
+        <div class="mins-label">${adeleToSoren * (sm.adeleToSoren || 5)} min · Adele read to Soren</div>
       </div>`;
   }
 

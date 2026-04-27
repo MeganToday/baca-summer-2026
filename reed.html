@@ -148,10 +148,11 @@
     .invest-note { font-size: 0.72rem; color: #90a4ae; margin-top: 6px; }
 
     /* ── TOGETHER ── */
-    .together-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
-    .together-tile { background: #e0f7f4; border-radius: 14px; padding: 16px; text-align: center; border: 2px solid #b2dfdb; }
-    .sibling-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #00897b; margin-bottom: 8px; }
-    .sibling-ph { width: 56px; height: 56px; border-radius: 50%; background: #00897b; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 8px; }
+    .together-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+    .together-tile { background: #e0f7f4; border-radius: 14px; padding: 14px 12px; text-align: center; border: 2px solid #b2dfdb; }
+    .together-pair { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
+    .together-pair img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 3px solid #00897b; }
+    .together-arrow { font-size: 1.4rem; color: #00897b; line-height: 1; }
     .stars-big { font-size: 1.6rem; font-weight: 900; color: #f57f17; }
     .mins-lbl { font-size: 0.78rem; color: #607d8b; }
     .dir-lbl { font-size: 0.72rem; color: #90a4ae; margin-top: 2px; }
@@ -436,21 +437,27 @@
   };
 
   function renderTogether() {
-    const sm=cfg.starMinutes||{reedToAdele:10,adeleToReed:5};
-    let reedToAdele=0, adeleToReed=0;
-    Object.values(starsData).forEach(d=>{ if(d.reedToAdele) reedToAdele++; if(d.adeleToReed) adeleToReed++; });
-    document.getElementById('together-grid').innerHTML=`
+    const sm = cfg.starMinutes || { reedToAdele: 10, adeleToReed: 5 };
+    let reedToAdele = 0, adeleToReed = 0;
+    Object.values(starsData).forEach(d => { if (d.reedToAdele) reedToAdele++; if (d.adeleToReed) adeleToReed++; });
+    document.getElementById('together-grid').innerHTML = `
       <div class="together-tile">
-        <img src="Adele.jpg" class="sibling-img" onerror="this.outerHTML='<div class=\\'sibling-ph\\'>🌸</div>'" />
+        <div class="together-pair">
+          <img src="Reed.jpg" />
+          <span class="together-arrow">→</span>
+          <img src="Adele.jpg" />
+        </div>
         <div class="stars-big">${reedToAdele} ⭐</div>
-        <div class="mins-lbl">${reedToAdele*(sm.reedToAdele||10)} minutes</div>
-        <div class="dir-lbl">Reed read to Adele</div>
+        <div class="mins-lbl">${reedToAdele * (sm.reedToAdele || 10)} min · Reed read to Adele</div>
       </div>
       <div class="together-tile">
-        <img src="Adele.jpg" class="sibling-img" onerror="this.outerHTML='<div class=\\'sibling-ph\\'>🌸</div>'" />
+        <div class="together-pair">
+          <img src="Adele.jpg" />
+          <span class="together-arrow">→</span>
+          <img src="Reed.jpg" />
+        </div>
         <div class="stars-big">${adeleToReed} ⭐</div>
-        <div class="mins-lbl">${adeleToReed*(sm.adeleToReed||5)} minutes</div>
-        <div class="dir-lbl">Adele read to Reed</div>
+        <div class="mins-lbl">${adeleToReed * (sm.adeleToReed || 5)} min · Adele read to Reed</div>
       </div>`;
   }
 
