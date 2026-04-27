@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parent Portal – Baca Summer Challenge 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7ff; color: #333; min-height: 100vh; }
+    .header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px 30px; text-align: center; }
+    .header h1 { font-size: 1.6rem; }
+    .back-link { display: inline-block; margin: 16px 20px; color: #667eea; text-decoration: none; font-weight: 600; }
+    .content { max-width: 700px; margin: 0 auto; padding: 20px; }
+    .card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    .card h2 { color: #555; margin-bottom: 16px; font-size: 1.2rem; }
+    input[type="password"], input[type="number"], input[type="text"] {
+      width: 100%; padding: 10px 12px; border: 2px solid #ddd; border-radius: 8px;
+      font-size: 1rem; margin-bottom: 12px;
+    }
+    input:focus { outline: none; border-color: #667eea; }
+    .btn { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none;
+      padding: 11px 28px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; }
+    .btn:hover { opacity: 0.9; }
+    .btn-save { background: #27ae60; }
+    .btn-save:hover { background: #219a52; }
+    .error { color: #e74c3c; font-size: 0.9rem; margin-top: 6px; }
+    .success { color: #27ae60; font-weight: 600; margin-top: 8px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    label { font-size: 0.85rem; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+    .field-group { margin-bottom: 14px; }
+    #portal-content { display: none; }
+    .section-title { font-size: 1rem; font-weight: 700; color: #667eea; margin: 20px 0 10px; border-bottom: 2px solid #eef; padding-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div class="header"><h1>🔐 Parent Portal</h1></div>
+  <a class="back-link" href="index.html">← Back to Main Page</a>
+  <div class="content">
+
+    <!-- LOGIN -->
+    <div class="card" id="portal-login">
+      <h2>Enter Parent Code</h2>
+      <input type="password" id="portal-code-input" placeholder="Parent code" autocomplete="off" />
+      <button class="btn" onclick="checkPortalCode()">Enter</button>
+      <div class="error" id="portal-error"></div>
+    </div>
+
+    <!-- PORTAL CONTENT -->
+    <div id="portal-content">
+      <div class="card">
+        <h2>⚙️ Edit Challenge Settings</h2>
+        <p style="color:#888;font-size:0.85rem;margin-bottom:16px">Changes take effect immediately and apply retroactively.</p>
+
+        <div class="section-title">Weekly Reading Targets (minutes)</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Soren's Weekly Target</label>
+            <input type="number" id="cfg-target-soren" min="1" />
+          </div>
+          <div class="field-group">
+            <label>Reed's Weekly Target</label>
+            <input type="number" id="cfg-target-reed" min="1" />
+          </div>
+        </div>
+        <div class="field-group" style="max-width:50%">
+          <label>Adele's Weekly Target</label>
+          <input type="number" id="cfg-target-adele" min="1" />
+        </div>
+
+        <div class="section-title">Earning Session Length (minutes per $5)</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Soren's Session Length</label>
+            <input type="number" id="cfg-session-soren" min="1" />
+          </div>
+          <div class="field-group">
+            <label>Reed's Session Length</label>
+            <input type="number" id="cfg-session-reed" min="1" />
+          </div>
+        </div>
+        <div class="field-group" style="max-width:50%">
+          <label>Adele's Session Length</label>
+          <input type="number" id="cfg-session-adele" min="1" />
+        </div>
+
+        <div class="section-title">Money Amounts</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>$ Per Reading Session</label>
+            <input type="number" id="cfg-money-session" min="0" step="0.5" />
+          </div>
+          <div class="field-group">
+            <label>$ Per Letter Written</label>
+            <input type="number" id="cfg-money-letter" min="0" step="0.5" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>$ Per Reading Star</label>
+            <input type="number" id="cfg-money-star" min="0" step="0.5" />
+          </div>
+          <div class="field-group">
+            <label>Yes Day Goal ($)</label>
+            <input type="number" id="cfg-yesday-goal" min="1" />
+          </div>
+        </div>
+
+        <div class="section-title">Passwords & Codes</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Family Code</label>
+            <input type="text" id="cfg-family-code" autocomplete="off" />
+          </div>
+          <div class="field-group">
+            <label>Parent Code</label>
+            <input type="text" id="cfg-parent-code" autocomplete="off" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Soren's Password</label>
+            <input type="text" id="cfg-pass-soren" autocomplete="off" />
+          </div>
+          <div class="field-group">
+            <label>Reed's Password</label>
+            <input type="text" id="cfg-pass-reed" autocomplete="off" />
+          </div>
+        </div>
+        <div class="field-group" style="max-width:50%">
+          <label>Adele's Password</label>
+          <input type="text" id="cfg-pass-adele" autocomplete="off" />
+        </div>
+
+        <button class="btn btn-save" onclick="saveConfig()">💾 Save All Changes</button>
+        <div class="success" id="save-success" style="display:none">✅ Settings saved successfully!</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD8iBh-PYw7-_SQrrm-CEIj6i3ylDKZhYc",
+      authDomain: "baca-summer-2026.firebaseapp.com",
+      projectId: "baca-summer-2026",
+      storageBucket: "baca-summer-2026.firebasestorage.app",
+      messagingSenderId: "866437593459",
+      appId: "1:866437593459:web:3faf11675f8abd7cba2d06"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let cfg = {};
+
+    async function loadConfig() {
+      const snap = await getDoc(doc(db, 'config', 'numbers'));
+      if (snap.exists()) cfg = snap.data();
+    }
+
+    window.checkPortalCode = async function() {
+      await loadConfig();
+      const input = document.getElementById('portal-code-input').value.trim();
+      if (input === cfg.parentCode) {
+        document.getElementById('portal-login').style.display = 'none';
+        document.getElementById('portal-content').style.display = 'block';
+        populateForm();
+      } else {
+        document.getElementById('portal-error').textContent = 'Incorrect code. Try again.';
+      }
+    };
+
+    document.getElementById('portal-code-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') window.checkPortalCode();
+    });
+
+    function populateForm() {
+      document.getElementById('cfg-target-soren').value = cfg.weeklyTargets?.soren || 150;
+      document.getElementById('cfg-target-reed').value = cfg.weeklyTargets?.reed || 100;
+      document.getElementById('cfg-target-adele').value = cfg.weeklyTargets?.adele || 50;
+      document.getElementById('cfg-session-soren').value = cfg.sessionMinutes?.soren || 30;
+      document.getElementById('cfg-session-reed').value = cfg.sessionMinutes?.reed || 20;
+      document.getElementById('cfg-session-adele').value = cfg.sessionMinutes?.adele || 10;
+      document.getElementById('cfg-money-session').value = cfg.moneyPerSession || 5;
+      document.getElementById('cfg-money-letter').value = cfg.moneyPerLetter || 2;
+      document.getElementById('cfg-money-star').value = cfg.moneyPerStar || 1;
+      document.getElementById('cfg-yesday-goal').value = cfg.yesdayGoal || 100;
+      document.getElementById('cfg-family-code').value = cfg.familyCode || '';
+      document.getElementById('cfg-parent-code').value = cfg.parentCode || '';
+      document.getElementById('cfg-pass-soren').value = cfg.passwords?.soren || '';
+      document.getElementById('cfg-pass-reed').value = cfg.passwords?.reed || '';
+      document.getElementById('cfg-pass-adele').value = cfg.passwords?.adele || '';
+    }
+
+    window.saveConfig = async function() {
+      const newCfg = {
+        familyCode: document.getElementById('cfg-family-code').value.trim(),
+        parentCode: document.getElementById('cfg-parent-code').value.trim(),
+        passwords: {
+          soren: document.getElementById('cfg-pass-soren').value.trim(),
+          reed: document.getElementById('cfg-pass-reed').value.trim(),
+          adele: document.getElementById('cfg-pass-adele').value.trim(),
+        },
+        weeklyTargets: {
+          soren: Number(document.getElementById('cfg-target-soren').value),
+          reed: Number(document.getElementById('cfg-target-reed').value),
+          adele: Number(document.getElementById('cfg-target-adele').value),
+        },
+        sessionMinutes: {
+          soren: Number(document.getElementById('cfg-session-soren').value),
+          reed: Number(document.getElementById('cfg-session-reed').value),
+          adele: Number(document.getElementById('cfg-session-adele').value),
+        },
+        moneyPerSession: Number(document.getElementById('cfg-money-session').value),
+        moneyPerLetter: Number(document.getElementById('cfg-money-letter').value),
+        moneyPerStar: Number(document.getElementById('cfg-money-star').value),
+        yesdayGoal: Number(document.getElementById('cfg-yesday-goal').value),
+        summerStart: '2026-06-08',
+        summerEnd: '2026-08-09',
+        starMinutes: { adeleToReed: 5, adeleToSoren: 5, reedToAdele: 10, sorenToAdele: 10 }
+      };
+      await setDoc(doc(db, 'config', 'numbers'), newCfg);
+      const s = document.getElementById('save-success');
+      s.style.display = 'block';
+      setTimeout(() => s.style.display = 'none', 3000);
+    };
+  </script>
+</body>
+</html>

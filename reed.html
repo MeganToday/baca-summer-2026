@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reed's Dashboard – Baca Summer Challenge 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #e0f7f4; color: #333; min-height: 100vh; }
+    #birthday-banner-reed {
+      display: none;
+      background: linear-gradient(90deg, #00b09b, #96c93d, #f7971e, #ffd200, #00b09b);
+      background-size: 400% 400%;
+      animation: gradShift 2s ease infinite;
+      color: white; text-align: center; padding: 18px;
+      font-size: 1.8rem; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      letter-spacing: 3px;
+    }
+    @keyframes gradShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    .header { background: linear-gradient(135deg, #00897b, #004d40); color: white; padding: 20px 30px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .header img { width: 70px; height: 70px; border-radius: 50%; border: 3px solid white; object-fit: cover; }
+    .header h1 { font-size: 1.8rem; }
+    .back-link { display: inline-block; margin: 16px 20px; color: #00897b; text-decoration: none; font-weight: 600; }
+    .content { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,137,123,0.1); border-left: 5px solid #00897b; }
+    .card h2 { color: #00897b; margin-bottom: 16px; font-size: 1.2rem; }
+    input[type="password"] { width: 200px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; margin-right: 10px; }
+    .btn { background: #00897b; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+    .btn:hover { background: #00695c; }
+    .error { color: #e74c3c; font-size: 0.9rem; margin-top: 6px; }
+    #dashboard { display: none; }
+    .money-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .money-box { background: #e0f7f4; border-radius: 10px; padding: 14px; text-align: center; }
+    .money-box .val { font-size: 1.6rem; font-weight: 900; color: #00897b; }
+    .money-box .lbl { font-size: 0.8rem; color: #666; }
+    .progress-bar-wrap { background: #eee; border-radius: 20px; height: 28px; overflow: hidden; margin: 10px 0; }
+    .progress-bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, #00897b, #004d40); transition: width 0.4s; display: flex; align-items: center; padding-left: 10px; color: white; font-size: 0.8rem; font-weight: 700; min-width: 30px; }
+    .book-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+    .book-item { background: #e0f7f4; border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+    .book-cover { width: 40px; height: 56px; object-fit: cover; border-radius: 4px; }
+    .book-cover-placeholder { width: 40px; height: 56px; background: #b2dfdb; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .book-title { font-size: 0.9rem; font-weight: 600; max-width: 120px; }
+    .book-actions { display: flex; gap: 4px; }
+    .book-btn { border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 0.8rem; }
+    .btn-finish { background: #27ae60; color: white; }
+    .btn-remove { background: #e74c3c; color: white; }
+    .btn-add { background: #00897b; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 10px; }
+    .add-form { display: flex; gap: 8px; margin-top: 10px; position: relative; }
+    .add-form input { flex: 1; padding: 8px 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
+    .add-form input:focus { outline: none; border-color: #00897b; }
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 60px; background: white; border: 1px solid #ddd; border-radius: 8px; z-index: 100; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .autocomplete-item { padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+    .autocomplete-item:hover { background: #e0f7f4; }
+    .autocomplete-thumb { width: 28px; height: 40px; object-fit: cover; border-radius: 3px; }
+    .letter-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+    .invest-calc { background: #e0f7f4; border-radius: 10px; padding: 14px; margin-top: 14px; }
+    .invest-calc p { margin-bottom: 8px; font-size: 0.95rem; }
+    .invest-calc input { width: 80px; padding: 6px; border: 2px solid #ddd; border-radius: 6px; font-size: 0.95rem; text-align: center; }
+    .invest-result { font-weight: 700; color: #00897b; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <div id="birthday-banner-reed">🎂 HAPPY BIRTHDAY REED! 🎉 🌊 You're 8 years old today! 🎈🥳🎁</div>
+  <div class="header">
+    <img src="Reed.jpg" alt="Reed" onerror="this.style.display='none'" />
+    <div><h1>Reed's Dashboard 🌊</h1><p style="opacity:0.85;font-size:0.9rem">Baca Summer Challenge 2026</p></div>
+  </div>
+  <a class="back-link" href="index.html">← Back to Main Page</a>
+  <div class="content">
+
+    <div class="card" id="login-card">
+      <h2>🔒 Enter your password</h2>
+      <input type="password" id="pass-input" placeholder="Password" autocomplete="off" />
+      <button class="btn" onclick="checkPassword()">Go!</button>
+      <div class="error" id="pass-error"></div>
+    </div>
+
+    <div id="dashboard">
+
+      <div class="card">
+        <h2>💰 Money Earned This Summer</h2>
+        <div class="money-summary">
+          <div class="money-box"><div class="val" id="total-earned">$0</div><div class="lbl">Total Earned</div></div>
+          <div class="money-box"><div class="val" id="reading-earned">$0</div><div class="lbl">From Reading</div></div>
+          <div class="money-box"><div class="val" id="letter-earned">$0</div><div class="lbl">From Letters</div></div>
+          <div class="money-box"><div class="val" id="invest-amount">$0</div><div class="lbl">💹 Greenlight</div></div>
+        </div>
+        <p style="font-size:0.85rem;color:#666;margin-bottom:6px">Progress toward $100 Only Child Yes Day</p>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%">$0</div>
+        </div>
+        <div class="invest-calc">
+          <p>💹 When I am <input type="number" id="invest-age" min="8" max="80" placeholder="age" oninput="calcInvest()" /> years old, this could be worth: <span class="invest-result" id="invest-result">$—</span></p>
+          <p style="font-size:0.75rem;color:#888">Assumes 7% annual stock market return · Reed turns 9 on July 22, 2026</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>🤝 Reading Together</h2>
+        <div id="reading-together-reed" style="color:#aaa;font-style:italic">Loading...</div>
+      </div>
+
+      <div class="card">
+        <h2>📖 Currently Reading</h2>
+        <div class="add-form">
+          <input type="text" id="current-input" placeholder="Search for a book..." autocomplete="off" oninput="bookSearch(this,'current-ac')" />
+          <div class="autocomplete-list" id="current-ac" style="display:none"></div>
+          <button class="btn-add" onclick="addBook('current')">+ Add</button>
+        </div>
+        <div class="book-list" id="current-books"></div>
+      </div>
+
+      <div class="card">
+        <h2>✅ Finished Reading!</h2>
+        <p style="color:#888;font-size:0.85rem;margin-bottom:10px">Books finished: <strong id="finished-count">0</strong></p>
+        <div class="add-form">
+          <input type="text" id="finished-input" placeholder="Add a finished book..." autocomplete="off" oninput="bookSearch(this,'finished-ac')" />
+          <div class="autocomplete-list" id="finished-ac" style="display:none"></div>
+          <button class="btn-add" onclick="addBook('finished')">+ Add</button>
+        </div>
+        <div class="book-list" id="finished-books"></div>
+      </div>
+
+      <div class="card">
+        <h2>🔖 Want to Read</h2>
+        <div class="add-form">
+          <input type="text" id="want-input" placeholder="Add a book to your list..." autocomplete="off" oninput="bookSearch(this,'want-ac')" />
+          <div class="autocomplete-list" id="want-ac" style="display:none"></div>
+          <button class="btn-add" onclick="addBook('want')">+ Add</button>
+        </div>
+        <div class="book-list" id="want-books"></div>
+      </div>
+
+      <div class="card">
+        <h2>✉️ Letters Written</h2>
+        <p style="margin-bottom:10px">Letters written: <strong id="letters-count">0</strong> &nbsp;|&nbsp; <a href="edit-letters.html?kid=reed" style="color:#00897b;font-size:0.85rem">Edit</a></p>
+        <div id="letters-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD8iBh-PYw7-_SQrrm-CEIj6i3ylDKZhYc",
+      authDomain: "baca-summer-2026.firebaseapp.com",
+      projectId: "baca-summer-2026",
+      storageBucket: "baca-summer-2026.firebasestorage.app",
+      messagingSenderId: "866437593459",
+      appId: "1:866437593459:web:3faf11675f8abd7cba2d06"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const KID = 'reed';
+    const BOOKS_API = 'AIzaSyANkUd8O2JwNTNr-iXv3jEWXbdah-m2nWs';
+    let cfg = {};
+    let readingData = {};
+    let starsData = {};
+    let booksData = { current: [], finished: [], want: [] };
+    let lettersData = [];
+
+    const WEEK_DATES = generateWeekDates();
+    function generateWeekDates() {
+      const weeks = [];
+      const start = new Date('2026-06-08T12:00:00');
+      for (let w = 0; w < 9; w++) {
+        const days = [];
+        for (let d = 0; d < 7; d++) {
+          const dt = new Date(start);
+          dt.setDate(start.getDate() + w * 7 + d);
+          days.push(dt.toISOString().split('T')[0]);
+        }
+        weeks.push(days);
+      }
+      return weeks;
+    }
+
+    function checkBirthdayBanner() {
+      const today = new Date().toISOString().split('T')[0];
+      if (today >= '2026-07-22' && today <= '2026-07-24') {
+        document.getElementById('birthday-banner-reed').style.display = 'block';
+      }
+    }
+
+    async function loadAll() {
+      const cfgSnap = await getDoc(doc(db, 'config', 'numbers'));
+      if (cfgSnap.exists()) cfg = cfgSnap.data();
+      const readSnap = await getDocs(collection(db, 'reading'));
+      readSnap.forEach(d => { readingData[d.id] = d.data(); });
+      const starsSnap = await getDocs(collection(db, 'stars'));
+      starsSnap.forEach(d => { starsData[d.id] = d.data(); });
+      const booksSnap = await getDoc(doc(db, 'books', KID));
+      if (booksSnap.exists()) booksData = { current: [], finished: [], want: [], ...booksSnap.data() };
+      const lettersSnap = await getDocs(collection(db, 'letters'));
+      lettersData = [];
+      lettersSnap.forEach(d => { if (d.data().from === KID) lettersData.push({ id: d.id, ...d.data() }); });
+    }
+
+    window.checkPassword = async function() {
+      const cfgSnap = await getDoc(doc(db, 'config', 'numbers'));
+      if (cfgSnap.exists()) cfg = cfgSnap.data();
+      const input = document.getElementById('pass-input').value.trim();
+      if (input === cfg.passwords?.[KID]) {
+        document.getElementById('login-card').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        checkBirthdayBanner();
+        await loadAll();
+        renderAll();
+        listenUpdates();
+      } else {
+        document.getElementById('pass-error').textContent = 'Wrong password, try again!';
+      }
+    };
+    document.getElementById('pass-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.checkPassword(); });
+
+    function listenUpdates() {
+      onSnapshot(collection(db, 'reading'), snap => {
+        snap.docChanges().forEach(c => { readingData[c.doc.id] = c.doc.data(); });
+        renderMoney();
+      });
+      onSnapshot(collection(db, 'stars'), snap => {
+        snap.docChanges().forEach(c => { starsData[c.doc.id] = c.doc.data(); });
+        renderReadingTogether();
+      });
+      onSnapshot(collection(db, 'letters'), snap => {
+        lettersData = [];
+        snap.forEach(d => { if (d.data().from === KID) lettersData.push({ id: d.id, ...d.data() }); });
+        renderLetters(); renderMoney();
+      });
+    }
+
+    function renderAll() { renderMoney(); renderReadingTogether(); renderBooks('current'); renderBooks('finished'); renderBooks('want'); renderLetters(); }
+
+    function calcReadingEarnings() {
+      const target = cfg.weeklyTargets?.[KID] || 100;
+      const session = cfg.sessionMinutes?.[KID] || 20;
+      const perSession = cfg.moneyPerSession || 5;
+      let total = 0;
+      let runningDeficit = 0;
+      for (let w = 0; w < 9; w++) {
+        const weekTotal = WEEK_DATES[w].reduce((s, d) => s + Number(readingData[d]?.[KID] || 0), 0);
+        if (weekTotal < target) { runningDeficit += (target - weekTotal); }
+        else {
+          const excess = weekTotal - target;
+          runningDeficit = Math.max(0, runningDeficit - excess);
+          const earnable = excess - Math.min(excess, runningDeficit + (excess - Math.max(0, runningDeficit - excess)));
+          total += Math.floor(Math.max(0, excess - Math.min(excess, runningDeficit + excess - Math.max(0,0))) / session) * perSession;
+        }
+      }
+      return total;
+    }
+
+    function renderMoney() {
+      // Recalculate properly with deficit tracking
+      const target = cfg.weeklyTargets?.[KID] || 100;
+      const session = cfg.sessionMinutes?.[KID] || 20;
+      const perSession = cfg.moneyPerSession || 5;
+      let readingEarnings = 0;
+      let deficit = 0;
+      for (let w = 0; w < 9; w++) {
+        const wTotal = WEEK_DATES[w].reduce((s, d) => s + Number(readingData[d]?.[KID] || 0), 0);
+        if (wTotal < target) { deficit += (target - wTotal); }
+        else {
+          const excess = wTotal - target;
+          const applied = Math.min(excess, deficit);
+          deficit = Math.max(0, deficit - excess);
+          readingEarnings += Math.floor((excess - applied) / session) * perSession;
+        }
+      }
+      const letterEarnings = lettersData.length * (cfg.moneyPerLetter || 2);
+      const total = readingEarnings + letterEarnings;
+      const yesdayGoal = cfg.yesdayGoal || 100;
+      const yesdayAmt = Math.min(total, yesdayGoal);
+      const investAmt = Math.max(0, total - yesdayGoal);
+
+      document.getElementById('total-earned').textContent = `$${total}`;
+      document.getElementById('reading-earned').textContent = `$${readingEarnings}`;
+      document.getElementById('letter-earned').textContent = `$${letterEarnings}`;
+      document.getElementById('invest-amount').textContent = `$${investAmt}`;
+      const pct = Math.min(100, (yesdayAmt / yesdayGoal) * 100);
+      const bar = document.getElementById('progress-bar');
+      bar.style.width = `${pct}%`;
+      bar.textContent = `$${yesdayAmt}`;
+      window._investAmount = investAmt;
+    }
+
+    window.calcInvest = function() {
+      const today = new Date().toISOString().split('T')[0];
+      const minAge = today >= '2026-07-22' ? 9 : 8;
+      const currentAge = today >= '2026-07-22' ? 9 : 8;
+      const age = parseInt(document.getElementById('invest-age').value);
+      const ageInput = document.getElementById('invest-age');
+      ageInput.min = minAge;
+      if (isNaN(age) || age < minAge) { document.getElementById('invest-result').textContent = `(min age ${minAge})`; return; }
+      const years = age - currentAge;
+      if (years <= 0) { document.getElementById('invest-result').textContent = '—'; return; }
+      const future = (window._investAmount || 0) * Math.pow(1.07, years);
+      document.getElementById('invest-result').textContent = `$${future.toFixed(2)}`;
+    };
+
+    function renderReadingTogether() {
+      let reedToAdele = 0, adeleToReed = 0;
+      Object.values(starsData).forEach(day => {
+        if (day.reedToAdele) reedToAdele++;
+        if (day.adeleToReed) adeleToReed++;
+      });
+      const starMin = cfg.starMinutes || { reedToAdele: 10, adeleToReed: 5 };
+      document.getElementById('reading-together-reed').innerHTML = `
+        <div style="display:flex;gap:20px;flex-wrap:wrap">
+          <div style="background:#e0f7f4;border-radius:10px;padding:14px;text-align:center;min-width:140px">
+            <div style="font-size:1.4rem;font-weight:900;color:#00897b">${reedToAdele} ⭐</div>
+            <div style="font-size:0.85rem;color:#666">Reed read to Adele</div>
+            <div style="font-size:0.8rem;color:#888">(${reedToAdele * starMin.reedToAdele} min)</div>
+          </div>
+          <div style="background:#e0f7f4;border-radius:10px;padding:14px;text-align:center;min-width:140px">
+            <div style="font-size:1.4rem;font-weight:900;color:#00897b">${adeleToReed} ⭐</div>
+            <div style="font-size:0.85rem;color:#666">Adele read to Reed</div>
+            <div style="font-size:0.8rem;color:#888">(${adeleToReed * starMin.adeleToReed} min)</div>
+          </div>
+        </div>`;
+    }
+
+    async function saveBooks() { await setDoc(doc(db, 'books', KID), booksData); }
+
+    window.bookSearch = async function(input, acId) {
+      const q = input.value.trim();
+      const ac = document.getElementById(acId);
+      if (q.length < 2) { ac.style.display = 'none'; return; }
+      try {
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=5&key=${BOOKS_API}`);
+        const data = await res.json();
+        ac.innerHTML = '';
+        if (!data.items) { ac.style.display = 'none'; return; }
+        data.items.forEach(item => {
+          const info = item.volumeInfo;
+          const thumb = info.imageLinks?.thumbnail || '';
+          const div = document.createElement('div');
+          div.className = 'autocomplete-item';
+          div.innerHTML = thumb ? `<img src="${thumb}" class="autocomplete-thumb" /><span>${info.title}</span>` : `<span>📚 ${info.title}</span>`;
+          div.addEventListener('click', () => { input.value = info.title; input.dataset.thumb = thumb; ac.style.display = 'none'; });
+          ac.appendChild(div);
+        });
+        ac.style.display = 'block';
+      } catch(e) { ac.style.display = 'none'; }
+    };
+
+    document.addEventListener('click', e => {
+      document.querySelectorAll('.autocomplete-list').forEach(ac => { if (!ac.contains(e.target)) ac.style.display = 'none'; });
+    });
+
+    window.addBook = async function(list) {
+      const input = document.getElementById(`${list}-input`);
+      const title = input.value.trim();
+      if (!title) return;
+      booksData[list] = booksData[list] || [];
+      booksData[list].push({ title, thumb: input.dataset.thumb || '', addedAt: new Date().toISOString() });
+      input.value = ''; input.dataset.thumb = '';
+      await saveBooks(); renderBooks(list);
+    };
+    window.removeBook = async function(list, idx) { booksData[list].splice(idx, 1); await saveBooks(); renderBooks(list); };
+    window.finishBook = async function(idx) {
+      const book = booksData.current.splice(idx, 1)[0];
+      booksData.finished.push({ ...book, finishedAt: new Date().toISOString() });
+      await saveBooks(); renderBooks('current'); renderBooks('finished');
+    };
+
+    function renderBooks(list) {
+      const container = document.getElementById(`${list}-books`);
+      const books = booksData[list] || [];
+      container.innerHTML = '';
+      if (list === 'finished') document.getElementById('finished-count').textContent = books.length;
+      if (books.length === 0) { container.innerHTML = `<div style="color:#aaa;font-style:italic;padding:10px">No books yet!</div>`; return; }
+      books.forEach((book, i) => {
+        const item = document.createElement('div');
+        item.className = 'book-item';
+        const coverHtml = book.thumb ? `<img src="${book.thumb}" class="book-cover" />` : `<div class="book-cover-placeholder">📚</div>`;
+        let actions = `<button class="book-btn btn-remove" onclick="removeBook('${list}',${i})">✕</button>`;
+        if (list === 'current') actions = `<button class="book-btn btn-finish" onclick="finishBook(${i})">✓</button>` + actions;
+        item.innerHTML = `${coverHtml}<span class="book-title">${book.title}</span><div class="book-actions">${actions}</div>`;
+        container.appendChild(item);
+      });
+    }
+
+    function renderLetters() {
+      document.getElementById('letters-count').textContent = lettersData.length;
+      const list = document.getElementById('letters-list');
+      list.innerHTML = '';
+      if (lettersData.length === 0) { list.innerHTML = '<div style="color:#aaa;font-style:italic">No letters yet.</div>'; return; }
+      lettersData.sort((a,b) => a.date > b.date ? -1 : 1).forEach(l => {
+        const row = document.createElement('div');
+        row.className = 'letter-row';
+        row.innerHTML = `<span>To: <strong>${l.to}</strong></span><span>${l.date}</span>`;
+        list.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>

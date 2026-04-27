@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Letters – Parent</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7ff; color: #333; min-height: 100vh; }
+    .header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 16px 24px; text-align: center; }
+    .content { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 16px; }
+    .card h2 { margin-bottom: 16px; color: #555; }
+    input[type="password"] { width: 200px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; margin-right: 10px; }
+    .btn { background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.95rem; cursor: pointer; }
+    .btn-danger { background: #e74c3c; }
+    .btn-danger:hover { background: #c0392b; }
+    .error { color: #e74c3c; font-size: 0.9rem; margin-top: 6px; }
+    #letters-section { display: none; }
+    .letter-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .letter-info { font-size: 0.9rem; }
+    .back-link { display: inline-block; margin: 16px 0; color: #667eea; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="header"><h1>🔐 Edit Letters — Parent Only</h1></div>
+  <div class="content">
+
+    <div class="card" id="login-card">
+      <h2>Enter Parent Code</h2>
+      <input type="password" id="code-input" placeholder="Parent code" autocomplete="off" />
+      <button class="btn" onclick="checkCode()">Enter</button>
+      <div class="error" id="code-error"></div>
+    </div>
+
+    <div id="letters-section">
+      <div class="card">
+        <h2 id="letters-title">Letters Written</h2>
+        <div id="letters-list"><p style="color:#aaa">No letters found.</p></div>
+      </div>
+      <a class="back-link" id="back-link" href="#">← Back to Kid's Page</a>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD8iBh-PYw7-_SQrrm-CEIj6i3ylDKZhYc",
+      authDomain: "baca-summer-2026.firebaseapp.com",
+      projectId: "baca-summer-2026",
+      storageBucket: "baca-summer-2026.firebasestorage.app",
+      messagingSenderId: "866437593459",
+      appId: "1:866437593459:web:3faf11675f8abd7cba2d06"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const kid = params.get('kid') || 'soren';
+    const displayNames = { soren: 'Soren', reed: 'Reed', adele: 'Adele' };
+    document.getElementById('back-link').href = `${kid}.html`;
+    let lettersData = [];
+
+    window.checkCode = async function() {
+      const cfgSnap = await getDoc(doc(db, 'config', 'numbers'));
+      const cfg = cfgSnap.exists() ? cfgSnap.data() : {};
+      const input = document.getElementById('code-input').value.trim();
+      if (input === cfg.parentCode) {
+        document.getElementById('login-card').style.display = 'none';
+        document.getElementById('letters-section').style.display = 'block';
+        document.getElementById('letters-title').textContent = `${displayNames[kid] || kid}'s Letters`;
+        await loadLetters();
+      } else {
+        document.getElementById('code-error').textContent = 'Incorrect code.';
+      }
+    };
+    document.getElementById('code-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.checkCode(); });
+
+    async function loadLetters() {
+      const snap = await getDocs(collection(db, 'letters'));
+      lettersData = [];
+      snap.forEach(d => { if (d.data().from === kid) lettersData.push({ id: d.id, ...d.data() }); });
+      renderLetters();
+    }
+
+    function renderLetters() {
+      const list = document.getElementById('letters-list');
+      list.innerHTML = '';
+      if (lettersData.length === 0) { list.innerHTML = '<p style="color:#aaa">No letters found.</p>'; return; }
+      lettersData.sort((a,b) => a.date > b.date ? -1 : 1).forEach(l => {
+        const row = document.createElement('div');
+        row.className = 'letter-row';
+        row.innerHTML = `
+          <div class="letter-info"><strong>To: ${l.to}</strong><br><span style="color:#888;font-size:0.85rem">${l.date}</span></div>
+          <button class="btn btn-danger" onclick="deleteLetter('${l.id}')">Delete</button>`;
+        list.appendChild(row);
+      });
+    }
+
+    window.deleteLetter = async function(id) {
+      if (!confirm('Permanently delete this letter? This cannot be undone.')) return;
+      await deleteDoc(doc(db, 'letters', id));
+      lettersData = lettersData.filter(l => l.id !== id);
+      renderLetters();
+    };
+  </script>
+</body>
+</html>
